@@ -805,7 +805,7 @@ ND.addEventListener("change",function(){
       imt23.checked=true;
       imt23.disabled=true;
     }
-    if(age>2.6 && (vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC' || vtype.vlaue=='PCV Taxi')){
+    if(age>2.6 && (vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC' || vtype.vlaue=='PCV Taxi'||vtype.value=='3GCV')){
       window.alert("NIL Dep is only applicable for commercial vehicle age greater than 2.6, if ncb is min 20% for renewal & 25% for rollover");
       if(ncbd.selectedIndex=='0'){
         ND.checked=false;
