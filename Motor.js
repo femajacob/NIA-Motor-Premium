@@ -1984,15 +1984,7 @@ function totalAmount(){
       }
     }if(ncbd.selectedIndex!='0'){
       document.getElementById('OD17').style.display='flex';
-      if(!ND.checked && !LPG.checked){
-        OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD3P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
-      }else if(ND.checked && !LPG.checked){
-        OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD3P.textContent)+Number(OD4P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
-      }else if(!ND.checked && LPG.checked){
-        OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD3P.textContent)+Number(OD14P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
-      }else if(ND.checked && LPG.checked){
-        OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD3P.textContent)+Number(OD4P.textContent)+Number(OD14P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
-      }
+      OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD7P.textContent)+Number(OD3P.textContent)+Number(OD4P.textContent)+Number(OD14P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
     }
     if(EVP.checked){
       if(eTypeSelect.selectedIndex==1 || eTypeSelect.selectedIndex==2){
