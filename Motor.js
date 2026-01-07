@@ -1859,29 +1859,38 @@ function basicTP(){
   console.log(today1.setHours(0,0,0,0));
   console.log(reg_date.setHours(0,0,0,0));
   console.log("basicTP");
+	  /* ------------------------------------------------
+     GOODS CARRYING VEHICLE (4W)
+  ------------------------------------------------- */
 	if(vtype.value=="GCV4"){
+		// LPG Kit TP premium
     if(LPG.checked){
       document.getElementById("Liability8P").textContent=60;
       document.getElementById('Liability8').style.display='flex';
     }
+		// Trailer TP premium
     if(TrOD.value){
       document.getElementById('Liability9').style.display='flex';
       document.getElementById("Liability9P").textContent=2485;
     }
+		// Geographical Extension TP
     if(GE.checked){
       document.getElementById("Liability7P").textContent=100;
       document.getElementById('Liability7').style.display='flex';
     }
+		// Paid Driver TP
     if(nopd.value){
       if(csinopd.selectedIndex=='1'){
         document.getElementById("Liability5P").textContent=nopd.value*60;
         document.getElementById('Liability5').style.display='flex';
       }
+		  
       else{
         document.getElementById("Liability5P").textContent=nopd.value*120;
         document.getElementById('Liability5').style.display='flex';
       }
     }
+		// Base TP premium by GVW slab
     document.getElementById('Liability1').style.display='flex';
 		if(gvw.value<=7500){
 			document.getElementById("Liability1P").textContent=16049;
@@ -1899,8 +1908,13 @@ function basicTP(){
 			document.getElementById("Liability1P").textContent=44242;
 		}
 	}
+/* ------------------------------------------------
+     THREE WHEELER – GOODS
+  ------------------------------------------------- */
   else if(vtype.value=='3GCV'){
+	  // Electric vehicles have lower TP tariff
     if(eTypeSelect.selectedIndex=='0'){
+		// Common TP additions
     if(LPG.checked){
       document.getElementById("Liability8P").textContent=60;
       document.getElementById('Liability8').style.display='flex';
@@ -1945,6 +1959,10 @@ function basicTP(){
     document.getElementById("Liability1P").textContent=3139;
   }
   }
+
+	/* ------------------------------------------------
+     THREE WHEELER – PASSENGER
+  ------------------------------------------------- */
   else if(vtype.value=='3PCV'){
     if(eTypeSelect.selectedIndex=='0'){
       if(LPG.checked){
@@ -1978,6 +1996,9 @@ function basicTP(){
 
     }  
   }
+	/* ------------------------------------------------
+     BUS / SCHOOL BUS
+  ------------------------------------------------- */
 	else if(vtype.value=="PCV Bus"){
     if(LPG.checked){
       document.getElementById("Liability8P").textContent=60;
@@ -2026,6 +2047,9 @@ function basicTP(){
 		document.getElementById("Liability1P").textContent=12192;
 		document.getElementById("Liability2P").textContent=nps.value*745;
 	}
+	/* ------------------------------------------------
+     MISC D Vehicles
+  ------------------------------------------------- */
 	else if(vtype.value=="MISC"){
     if(LPG.checked){
       document.getElementById("Liability8P").textContent=60;
@@ -2052,6 +2076,10 @@ function basicTP(){
     document.getElementById('Liability1').style.display='flex';
 		document.getElementById("Liability1P").textContent=7267;
 	}
+
+	/* ------------------------------------------------
+     TAXI
+  ------------------------------------------------- */
 	else if(vtype.value=="PCV Taxi"){
     if(LPG.checked){
       document.getElementById("Liability8P").textContent=60;
@@ -2085,9 +2113,14 @@ function basicTP(){
 			document.getElementById("Liability1P").textContent=10523;
 			document.getElementById("Liability2P").textContent=nps.value*1117;
 		}
-	}else if(vtype.value=="PvtCar"){
+	}
+	  /* ------------------------------------------------
+     PRIVATE CAR
+  ------------------------------------------------- */
+	else if(vtype.value=="PvtCar"){
     document.getElementById('Liability1').style.display='flex';
 		if(today1.setHours(0,0,0,0)==reg_date.setHours(0,0,0,0)){
+			// Multi-year TP for new vehicles
 			if(eTypeSelect.selectedIndex=='0'){
         if(cc.value<=1000){
           document.getElementById("Liability1P").textContent=6521;
@@ -2098,7 +2131,9 @@ function basicTP(){
         else{
           document.getElementById("Liability1P").textContent=24596;
         }
-      }else if(eTypeSelect.selectedIndex=='1'){
+      }
+			 // EV / Hybrid discount
+		else if(eTypeSelect.selectedIndex=='1'){
         if(cc.value<=30){
           document.getElementById("Liability1P").textContent=Math.round(6521*0.85);
         }
@@ -2209,7 +2244,12 @@ function basicTP(){
       }   
       
 		}
-	}else if(vtype.value=="2W"){
+	}
+
+	/* ------------------------------------------------
+     TWO WHEELER
+  ------------------------------------------------- */
+	else if(vtype.value=="2W"){
     document.getElementById('Liability1').style.display='flex';
 		if(today1.setHours(0,0,0,0)==reg_date.setHours(0,0,0,0)){
 			if(eTypeSelect.selectedIndex==0 || eTypeSelect.selectedIndex==2){
@@ -2329,27 +2369,94 @@ function basicTP(){
 		}
 	}
 }
+
+/* ==================================================
+   FUNCTION: totalAmount
+====================================================
+PURPOSE:
+This is the FINAL premium computation function.
+
+It:
+• Calculates Base OD
+• Applies discounts & loadings
+• Applies all selected add-ons
+• Calculates Third Party premium
+• Applies GST
+• Derives FINAL PAYABLE AMOUNT
+
+This function should be triggered ONLY after:
+• Vehicle details are entered
+• IDV is calculated
+• OD rate is available
+==================================================== */
 function totalAmount(){
+	// Registration date (used for new vs renewal logic)
   const jrdate=new Date(rdate.valueAsDate);
   var presentDate=new Date();
+	  /* ----------------------------------------------
+     STEP 0: RESET ALL PREVIOUS PREMIUM VALUES
+  ----------------------------------------------
+  Prevents stale values from previous calculations
+  ---------------------------------------------- */
   resetPremiumAmount();
+	/* ----------------------------------------------
+     STEP 1: VALIDATE MANDATORY CONDITIONS
+  ----------------------------------------------
+  Ensures:
+  • OD rate exists
+  • IDV is calculated
+  • Base OD premium is computable
+  ---------------------------------------------- */
   if(rate.textContent!=''&& newidv.textContent!='' && basicODPremium()){
+	    /* --------------------------------------------
+       STEP 2: CALCULATE THIRD PARTY PREMIUM
+    --------------------------------------------
+    TP premium is tariff-driven (IRDAI)
+    -------------------------------------------- */
     basicTP();
+	/* --------------------------------------------
+       STEP 3: OD DISCOUNT (UW / SPECIAL DISCOUNT)
+    --------------------------------------------
+    Applied as a negative percentage on Base OD
+    -------------------------------------------- */
     if(odd.value!=null){
       OD2P.textContent=((Number(OD1P.textContent)*odd.value)/(-100)).toFixed(2);
     }
+
+	      /* --------------------------------------------
+       STEP 4: ELECTRICAL ACCESSORIES (ELA)
+    --------------------------------------------
+    • Rated at 4% of accessory value
+    • Discount adjusted if OD discount exists
+    -------------------------------------------- */
     if(ELA.value){
       document.getElementById("OD19").style.display='flex';
       OD19P.textContent=((ELA.value*0.04)*(1-Number(odd.value)/100)).toFixed(2);
     }
+	     /* --------------------------------------------
+       STEP 5: TRAILER OD PREMIUM
+    --------------------------------------------
+    • Rated at 1.05% of trailer value
+    -------------------------------------------- */
     if(TrOD.value){
       document.getElementById("OD20").style.display='flex';
       OD20P.textContent=((TrOD.value*0.0105)*(1-Number(odd.value)/100)).toFixed(2);
     }
+	    /* --------------------------------------------
+       STEP 6: IMT 23 – RESTRICTED DRIVING LOADING
+    --------------------------------------------
+    Adds 15% loading on:
+    • Base OD
+    • Discounts
+    • Accessories
+    -------------------------------------------- */
     if(imt23.checked){
       OD3P.textContent=((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*0.15).toFixed(2);
       document.getElementById('OD3').style.display='flex';
     }
+	/* --------------------------------------------
+       STEP 7: PA TO OWNER / DRIVER
+    -------------------------------------------- */
     if(paodch.checked){
       if(paodt.value=='1'){
         Liability4P.textContent=275;
@@ -2370,7 +2477,11 @@ function totalAmount(){
       console.log(typeof nps.value);
       document.getElementById("Liability2").style.display='flex';
     }
+	  /* --------------------------------------------
+       STEP 8: LEGAL LIABILITY TO DRIVER / EMPLOYEE
+    -------------------------------------------- */
     if(lld.value!=null && lld.value!='' && lld.value!='0'){
+		// New vehicle attracts multi-year TP
       if(vtype.value=="PvtCar" && jrdate.setHours(0,0,0,0)==presentDate.setHours(0,0,0,0)){
         Liability3P.textContent=lld.value*50*3;
         document.getElementById("Liability3").style.display='flex';
@@ -2382,6 +2493,9 @@ function totalAmount(){
         document.getElementById("Liability3").style.display='flex';
       }
     }
+	/* --------------------------------------------
+       STEP 9: ADD-ON PREMIUMS
+    -------------------------------------------- */
     if(ND.checked){
       nilDep();
       if(OD4P.textContent!=''){
@@ -2483,7 +2597,13 @@ function totalAmount(){
       }else{
         OD16P.textContent=towingAmt.value*0.075;
       }
-    }if(ncbd.selectedIndex!='0'){
+    }
+	/* --------------------------------------------
+       STEP 14: NO CLAIM BONUS (NCB)
+    --------------------------------------------
+    Applied LAST on OD portion only
+    -------------------------------------------- */
+	  if(ncbd.selectedIndex!='0'){
       document.getElementById('OD17').style.display='flex';
       OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD7P.textContent)+Number(OD3P.textContent)+Number(OD4P.textContent)+Number(OD14P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
     }
@@ -2493,8 +2613,13 @@ function totalAmount(){
         document.getElementById("OD18").style.display='flex';
       }
     }
+
+	/* --------------------------------------------
+       STEP 15: TOTAL OD PREMIUM & GST
+    -------------------------------------------- */
     
     if(vtype.value=='GCV4' || vtype.value=='3GCV'){
+
       tod.textContent=
       (Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD3P.textContent)+Number(OD4P.textContent)+Number(OD5P.textContent)
       +Number(OD6P.textContent)+Number(OD7P.textContent)+Number(OD8P.textContent)+Number(OD9P.textContent)+Number(OD10P.textContent)
@@ -2509,7 +2634,7 @@ function totalAmount(){
       ((Number(Liability1P.textContent)*0.05)+(Number(Liability2P.textContent)+Number(Liability3P.textContent)+Number(Liability4P.textContent)+
       Number(Liability5P.textContent)+Number(Liability6P.textContent)+Number(Liability7P.textContent)+Number(Liability8P.textContent)+Number(Liability9P.textContent))*0.18).toFixed(2);
       document.getElementById('rupees').textContent=Math.ceil(Number(tod.textContent)+Number(god.textContent)+Number(ttp.textContent)+Number(gttp.textContent)+1);
-      //document.getElementById('rupees').style.fontSize='18px';
+      
     }
     if(vtype.value!='GCV4' && vtype.value!='3GCV'){
       tod.textContent=
@@ -2519,12 +2644,16 @@ function totalAmount(){
       +Number(OD16P.textContent)+Number(OD17P.textContent)+Number(OD18P.textContent)+Number(OD19P.textContent)
       ).toFixed(0);
       god.textContent=(Number(tod.textContent)*0.18).toFixed(2);
+	
+		/* --------------------------------------------
+       STEP 16: TOTAL TP PREMIUM & GST
+    -------------------------------------------- */
       ttp.textContent=
       (Number(Liability1P.textContent)+Number(Liability2P.textContent)+Number(Liability3P.textContent)+Number(Liability4P.textContent)+
       Number(Liability5P.textContent)+Number(Liability6P.textContent)+Number(Liability7P.textContent)+Number(Liability8P.textContent)+Number(Liability9P.textContent)).toFixed(0);
       gttp.textContent=(Number(ttp.textContent)*0.18).toFixed(2);
       document.getElementById('rupees').textContent=Math.ceil(Number(tod.textContent)+Number(god.textContent)+Number(ttp.textContent)+Number(gttp.textContent)+1);
-      //document.getElementById('rupees').style.fontSize='18px';
+      
     }
 
   }  
@@ -2532,6 +2661,8 @@ function totalAmount(){
     window.alert("Mandatory Fields Are Missing");
   }
 }
+
+
 function checkAddonApplicable(){
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
@@ -3114,6 +3245,7 @@ function evProtect(){
     }
   }
 }
+
 
 
 
