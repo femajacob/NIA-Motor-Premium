@@ -162,9 +162,9 @@ to avoid displaying stale data.
   resetPremiumAmount();
 })();
 
-/* ==================================================
-   OWN DAMAGE (OD) RATE CALCULATION FUNCTIONS
-====================================================
+/* =============================================================
+   OWN DAMAGE (OD) RATE CALCULATION FUNCTIONS FOR GCV, PC and TW
+================================================================
 Each function below calculates the OD rate (%) based on:
 • Vehicle age (derived from registration & risk dates)
 • Zone (A / B / C)
@@ -174,8 +174,24 @@ Each function below calculates the OD rate (%) based on:
 These functions strictly represent tariff tables.
 ==================================================== */
 
+/* --------------------------------------------------
+   FUNCTION: gcvODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• Goods Carrying Vehicles (4+ wheelers)
+
+Factors considered:
+• Vehicle age
+• Zone classification
+
+Output:
+• Updates OD rate (%) in UI
+-------------------------------------------------- */
+
 function gcvODRate(){
   console.log('insdie gcv');
+
+// Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -189,7 +205,10 @@ function gcvODRate(){
     age=(days+1)/365.25;
   }
   console.log(age);
+
+// Apply zone-wise OD rate based on vehicle age
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         rate.textContent=1.743;
@@ -199,6 +218,7 @@ function gcvODRate(){
         rate.textContent=1.830;
       }
       break;
+		  //ZONE C
       case 'zonec':
       if(age<5){
         rate.textContent=1.726;
@@ -208,6 +228,7 @@ function gcvODRate(){
         rate.textContent=1.812;
       }
       break;
+		  //ZONE A
       case 'zonea':
       if(age<5){
         rate.textContent=1.751;
@@ -221,8 +242,24 @@ function gcvODRate(){
 }
 
 }
+
+/* --------------------------------------------------
+   FUNCTION: pvtCarODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• Private Cars
+
+Factors considered:
+• Vehicle age
+• Zone
+• Cubic Capacity (CC)
+• Electric / Hybrid classification
+
+Electric vehicles have a separate tariff structure.
+-------------------------------------------------- */
+
 function pvtCarODRate(){
-  //console.log('insdie gcv');
+	// Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -236,8 +273,13 @@ function pvtCarODRate(){
     age=(days+1)/365.25;
   }
   console.log(age);
+/* -----------------------------------------------
+     ELECTRIC / HYBRID VEHICLE OD RATES
+  ----------------------------------------------- */
   if(eTypeSelect.selectedIndex=='1'){
+	  // Apply zone-wise OD rate based on vehicle age
     switch (zone.value){
+		//ZONE B
       case 'zoneb':
         if(age<5){
           rate.textContent=3.191;
@@ -247,6 +289,8 @@ function pvtCarODRate(){
           rate.textContent=3.430;
         }
         break;
+
+		//ZONE C
       case 'zonec':
         if(age<5){
           rate.textContent=3.191;
@@ -256,6 +300,8 @@ function pvtCarODRate(){
           rate.textContent=3.430;
         }
         break;
+
+			//ZONE A
       case 'zonea':
         if(age<5){
           rate.textContent=3.283;
@@ -269,7 +315,12 @@ function pvtCarODRate(){
     }
     return;
   }
+
+/* -----------------------------------------------
+     INTERNAL COMBUSTION ENGINE (ICE) VEHICLES
+  ----------------------------------------------- */
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         if(cc.value<=1000)
@@ -294,6 +345,7 @@ function pvtCarODRate(){
            rate.textContent=3.594; 
       }
       break;
+		//ZONE C
       case 'zonec':
         if(age<5){
           if(cc.value<=1000)
@@ -318,6 +370,7 @@ function pvtCarODRate(){
              rate.textContent=3.594; 
         }
       break;
+		  //ZONE A
       case 'zonea':
         if(age<5){
           if(cc.value<=1000)
@@ -344,10 +397,26 @@ function pvtCarODRate(){
       break;
 
 }
-
+	
 }
+
+/* --------------------------------------------------
+   FUNCTION: twoWheelerODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• Two Wheelers (including Scooter / Motorcycle)
+
+Factors considered:
+• Vehicle age
+• Zone
+• Cubic Capacity
+• Electric classification
+
+Lower CC vehicles attract lower OD rates.
+-------------------------------------------------- */
 function twoWheelerODRate(){
   console.log('insdie gcv');
+	// Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -361,8 +430,14 @@ function twoWheelerODRate(){
     age=(days+1)/365.25;
   }
   console.log(age);
+
+/* -----------------------------------------------
+     ELECTRIC TWO WHEELER OD RATES
+  ----------------------------------------------- */
   if(eTypeSelect.selectedIndex==1){
     switch (zone.value){
+			
+		//ZONE B
       case 'zoneb':
         if(age<5){
           rate.textContent=1.760;
@@ -372,6 +447,8 @@ function twoWheelerODRate(){
           rate.textContent=1.892;
         }
         break;
+			
+			//ZONE C
       case 'zonec':
         if(age<5){
           rate.textContent=1.760;
@@ -381,6 +458,8 @@ function twoWheelerODRate(){
           rate.textContent=1.892;
         }
         break;
+
+			//ZONE A
       case 'zonea':
         if(age<5){
           rate.textContent=1.793;
@@ -394,7 +473,12 @@ function twoWheelerODRate(){
     }
     return;
   }
+
+ /* -----------------------------------------------
+     ICE TWO WHEELER OD RATES
+  ----------------------------------------------- */
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         if(cc.value<=150)
@@ -419,6 +503,8 @@ function twoWheelerODRate(){
            rate.textContent=1.982; 
       }
       break;
+
+		  //ZONE C
       case 'zonec':
         if(age<5){
           if(cc.value<=150)
@@ -443,6 +529,8 @@ function twoWheelerODRate(){
              rate.textContent=1.982; 
         }
       break;
+
+		  //ZONE A
       case 'zonea':
         if(age<5){
           if(cc.value<=150)
@@ -469,10 +557,39 @@ function twoWheelerODRate(){
       break;
 
 }
+/* ==================================================
+   COMMERCIAL & PASSENGER VEHICLE – OD RATE FUNCTIONS
+====================================================
+This section handles OD rate calculation for:
+• Taxi
+• Passenger Carrying Vehicles (Bus / School Bus)
+• Miscellaneous Vehicles
+• 3-Wheeler Goods & Passenger Vehicles
 
+Rates depend on:
+• Vehicle age
+• Zone classification
+• CC / Passenger capacity (where applicable)
+==================================================== */
+
+/* --------------------------------------------------
+   FUNCTION: taxiODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• Passenger Carrying Taxi Vehicles
+
+Factors considered:
+• Vehicle age
+• Zone
+• Engine cubic capacity
+
+Taxi vehicles attract higher OD rates due to
+higher frequency of commercial usage.
+-------------------------------------------------- */
 }
 function taxiODRate(){
   console.log('insdie taxi');
+	// Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -487,6 +604,7 @@ function taxiODRate(){
   }
   console.log(age);
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         if(cc.value<=1000)
@@ -511,6 +629,7 @@ function taxiODRate(){
            rate.textContent=3.686; 
       }
       break;
+		  //ZONE C
       case 'zonec':
         if(age<5){
           if(cc.value<=1000)
@@ -535,6 +654,7 @@ function taxiODRate(){
              rate.textContent=3.686; 
         }
       break;
+		  //ZONE A
       case 'zonea':
         if(age<5){
           if(cc.value<=1000)
@@ -562,8 +682,25 @@ function taxiODRate(){
 
 }
 }
+
+/* --------------------------------------------------
+   FUNCTION: pcvBusODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• Passenger Carrying Buses
+• School Buses
+
+Factors considered:
+• Vehicle age
+• Zone
+
+Passenger buses use flat OD rates without CC
+due to uniform risk profile.
+-------------------------------------------------- */
+
 function pcvBusODRate(){
   console.log('insdie gcv');
+	// Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -578,6 +715,7 @@ function pcvBusODRate(){
   }
   console.log(age);
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         rate.textContent=1.672;
@@ -587,6 +725,7 @@ function pcvBusODRate(){
         rate.textContent=1.756;
       }
       break;
+		  //ZONE B
       case 'zonec':
       if(age<5){
         rate.textContent=1.656;
@@ -596,6 +735,7 @@ function pcvBusODRate(){
         rate.textContent=1.739;
       }
       break;
+		  //ZONE B
       case 'zonea':
       if(age<5){
         rate.textContent=1.680;
@@ -608,6 +748,17 @@ function pcvBusODRate(){
 
 }
 }
+
+/* --------------------------------------------------
+   FUNCTION: miscODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• Miscellaneous Vehicles
+
+These vehicles usually have lower risk exposure
+and hence lower OD rates.
+-------------------------------------------------- */
+
 function miscODRate(){
   console.log('insdie misc');
   const jrsdate=new Date(rsdate.valueAsDate);
@@ -654,8 +805,19 @@ function miscODRate(){
 
 }
 }
+
+/* --------------------------------------------------
+   FUNCTION: threegcvODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• 3-Wheeler Goods Carrying Vehicles
+
+Rates are lower than 4-wheeler GCV due to
+lower asset value and exposure.
+-------------------------------------------------- */
 function threegcvODRate(){
   console.log('insdie 3gcv');
+	//Calculate the Age of the Vehicle
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -670,6 +832,7 @@ function threegcvODRate(){
   }
   console.log(age);
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         rate.textContent=1.656;
@@ -679,6 +842,7 @@ function threegcvODRate(){
         rate.textContent=1.739;
       }
       break;
+		  //ZONE C
       case 'zonec':
       if(age<5){
         rate.textContent=1.640;
@@ -689,6 +853,7 @@ function threegcvODRate(){
       }
       break;
       case 'zonea':
+		  //ZONE A
       if(age<5){
         rate.textContent=1.664;
       }else if(age>=5&&age<7){
@@ -699,8 +864,19 @@ function threegcvODRate(){
       break;
 }
 }
+
+/* --------------------------------------------------
+   FUNCTION: threepcvODRate
+-----------------------------------------------------
+Calculates OD rate for:
+• 3-Wheeler Passenger Carrying Vehicles
+
+Passenger risk is higher than goods carriers,
+but lower than buses.
+-------------------------------------------------- */
 function threepcvODRate(){
   console.log('insdie 3pcv');
+	//Calculate the Age of the Vehicle
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -715,6 +891,7 @@ function threepcvODRate(){
   }
   console.log(age);
   switch(zone.value){
+		  //ZONE B
     case 'zoneb':
       if(age<5){
         rate.textContent=1.272;
@@ -724,6 +901,7 @@ function threepcvODRate(){
         rate.textContent=1.336;
       }
       break;
+		  //ZONE C
       case 'zonec':
       if(age<5){
         rate.textContent=1.260;
@@ -734,6 +912,7 @@ function threepcvODRate(){
       }
       break;
       case 'zonea':
+		  //ZONE A
       if(age<5){
         rate.textContent=1.278;
       }else if(age>=5&&age<7){
@@ -744,11 +923,33 @@ function threepcvODRate(){
       break;
 }
 }
+/* ==================================================
+   EVENT LISTENERS – INPUT CHANGE HANDLING
+====================================================
+This section ensures that:
+• Premium is recalculated whenever a rating parameter changes
+• Stale premium values are cleared
+• Invalid combinations are prevented
+• Underwriting discipline is enforced
+
+Insurance premiums MUST be recalculated immediately
+on any change in risk parameters.
+==================================================== */
+
+/* --------------------------------------------------
+   REGISTRATION DATE CHANGE
+-----------------------------------------------------
+Changing registration date affects:
+• Vehicle age
+• OD rate
+• Add-on eligibility
+
+Hence all dependent values are reset.
+-------------------------------------------------- */
 
 rdate.addEventListener("change",function(){
-  //console.log(rsdate.value);
-  //console.log(typeof rsdate.value);
   const checkDate=new Date(rdate.value);
+	// Reset all rating parameters
   cc.value=null;
   gvw.value=null;
   lld.value=null;
@@ -758,6 +959,7 @@ rdate.addEventListener("change",function(){
   oldidv.value=null;
   dep.value=null;
   odd.value=null;
+	// Reset discounts and add-ons
   ncbd.selectedIndex='0';
   tyreV.selectedIndex='0';
   towingAmt.value=null;
@@ -769,11 +971,11 @@ rdate.addEventListener("change",function(){
   eTypeSelect.disabled=true;
   ELA.value=null;
   EMP.value=null;
-  //document.getElementById('rupees').textContent
+ // Validate date and recalculate
   if(!isNaN(checkDate.getTime())){
-  resetAddon();
-  checkAddonApplicable();
-  resetPremiumAmount();
+  resetAddon();					// Clear all add-ons
+  checkAddonApplicable();		// Re-evaluate add-on eligibility
+  resetPremiumAmount();			// Clear premium values
   basicODRate(rdate.value,rsdate.value,zone.value,vtype.value,gvw.value,cc.value,nps.value);
   		  
   console.log("Inside rdate event");
@@ -784,6 +986,13 @@ rdate.addEventListener("change",function(){
   }
   
 });
+
+/* --------------------------------------------------
+   ZONE CHANGE
+-----------------------------------------------------
+Zone impacts OD rate directly.
+Premium must be recalculated.
+-------------------------------------------------- */
 zone.addEventListener("change",function(){
   console.log(rsdate.value);
   console.log(typeof rsdate.value);
@@ -794,6 +1003,12 @@ zone.addEventListener("change",function(){
   checkAddonApplicable();
   
 });
+
+/* --------------------------------------------------
+   GVW CHANGE (Commercial Vehicles)
+-----------------------------------------------------
+Gross Vehicle Weight impacts OD rate and loadings.
+-------------------------------------------------- */
 gvw.addEventListener("input",function(){
   console.log(rsdate.value);
   console.log(typeof rsdate.value);
@@ -801,6 +1016,12 @@ gvw.addEventListener("input",function(){
   console.log("Inside gvw event");
 	resetPremiumAmount();
 });
+
+/* --------------------------------------------------
+   CC CHANGE (Private / Two Wheeler / Taxi)
+-----------------------------------------------------
+Cubic Capacity is a core OD rating parameter.
+-------------------------------------------------- */
 cc.addEventListener("input",function(){
   console.log(rsdate.value);
   console.log(typeof rsdate.value);
@@ -808,9 +1029,19 @@ cc.addEventListener("input",function(){
   console.log("Inside cc event");
 	resetPremiumAmount();
 });
+
+/* --------------------------------------------------
+   VEHICLE TYPE CHANGE
+-----------------------------------------------------
+Changing vehicle type changes:
+• Applicable tariffs
+• Mandatory fields
+• Allowed add-ons
+-------------------------------------------------- */
 vtype.addEventListener("input",function(){
   console.log(rsdate.value);
   console.log(typeof rsdate.value);
+	// Reset all dependent inputs
   cc.value=null;
   gvw.value=null;
   nps.value=null;
@@ -820,6 +1051,7 @@ vtype.addEventListener("input",function(){
   dep.value=null;
   odd.value=null;
   lld.value=null;
+	// Reset discounts and add-ons
   ncbd.selectedIndex='0';
   tyreV.selectedIndex='0';
   towingAmt.value=null;
@@ -830,25 +1062,41 @@ vtype.addEventListener("input",function(){
   eTypeSelect.selectedIndex='0';
   eTypeSelect.disabled=true;
   ELA.value=null;
- // document.getElementById('rupees').textContent
+ 
   
   console.log("back to vtype event");
   resetAddon();
   checkAddonApplicable();
   resetPremiumAmount();	
+	// Recalculate OD rate for new vehicle type
   basicODRate(rdate.value,rsdate.value,zone.value,vtype.value,gvw.value,cc.value,nps.value);	
 });
+
+/* --------------------------------------------------
+   ELECTRIC VEHICLE TYPE CHANGE
+-----------------------------------------------------
+EV / Hybrid selection alters:
+• OD rates
+• Add-on eligibility
+-------------------------------------------------- */
 eTypeSelect.addEventListener("input" ,function(){
   basicODRate(rdate.value,rsdate.value,zone.value,vtype.value,gvw.value,cc.value,nps.value);
   resetPremiumAmount();
   resetAddon();
   checkAddonApplicable();
 });
+
+/* --------------------------------------------------
+   NUMBER OF PASSENGERS CHANGE
+-----------------------------------------------------
+Passenger count affects:
+• OD loadings
+• TP passenger liability
+-------------------------------------------------- */
+
 nps.addEventListener("input",function(){
-  //cc.value=null;
+  // Reset dependent parameters
   gvw.value=null;
-  
-  //nps.value=null;
   rate.textContent='';
   document.getElementById('rupees').textContent
   newidv.textContent='';
@@ -871,7 +1119,21 @@ nps.addEventListener("input",function(){
   resetPremiumAmount();	
   basicODRate(rdate.value,rsdate.value,zone.value,vtype.value,gvw.value,cc.value,nps.value);	
 });
+
+/* --------------------------------------------------
+   NIL DEPRECIATION SELECTION VALIDATION
+-----------------------------------------------------
+Triggered when Nil Dep checkbox is toggled.
+
+Validations performed:
+• Vehicle age limits
+• Vehicle category eligibility
+• Mandatory IMT 23 for certain vehicles
+• Minimum NCB requirement for older vehicles
+-------------------------------------------------- */
 ND.addEventListener("change",function(){
+
+	// Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -885,10 +1147,14 @@ ND.addEventListener("change",function(){
     age=(days+1)/365.25;
   }
   if(ND.checked){
+	  // IMT 23 mandatory for commercial vehicles with Nil Dep
     if(vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC'){
       imt23.checked=true;
       imt23.disabled=true;
     }
+	/* ----------------------------------------------
+       COMMERCIAL VEHICLE NIL DEP CONDITIONS
+    ---------------------------------------------- */
     if(age>2.6 && (vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC' || vtype.vlaue=='PCV Taxi'||vtype.value=='3GCV')){
       window.alert("NIL Dep is only applicable for commercial vehicle age greater than 2.6, if ncb is min 20% for renewal & 25% for rollover");
       if(ncbd.selectedIndex=='0'){
@@ -896,6 +1162,10 @@ ND.addEventListener("change",function(){
         imt23.disabled=false;
       }
     }
+
+	/* ----------------------------------------------
+       PRIVATE CAR / TWO WHEELER NIL DEP CONDITIONS
+    ---------------------------------------------- */
     if(age>4.6 && (vtype.value=='PvtCar'||vtype.value=='2W'||vtype.value=='2WSS'||vtype.value=='PvtCarS')){
       window.alert("NIL Dep is only applicable for age greater than 4.6, if ncb is min 20% for renewal & 25% for rollover");
       if(ncbd.selectedIndex=='0'){
@@ -904,13 +1174,23 @@ ND.addEventListener("change",function(){
     }
   }
   else{
+	  // Re-enable IMT 23 if Nil Dep is deselected
     if(vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC'){
 	  imt23.disabled=false;  
     }
 	 
   }
 });
+/* --------------------------------------------------
+   NCB CHANGE VALIDATION
+-----------------------------------------------------
+Triggered when NCB percentage is changed.
+
+Revalidates Nil Dep eligibility dynamically.
+-------------------------------------------------- */
+
 ncbd.addEventListener("input",function(){
+	// Recalculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log(jrdate);
@@ -924,15 +1204,19 @@ ncbd.addEventListener("input",function(){
     age=(days+1)/365.25;
   }
   if(ND.checked){
+	  // Commercial vehicle NCB dependency
     if(age>2.6 && (vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC' || vtype.vlaue=='PCV Taxi')){
       window.alert("NIL Dep is only applicable for commercial vehicle age greater than 2.6, if ncb is min 20% for renewal & 25% for rollover");
+		// IMT 23 mandatory for commercial vehicles with Nil Dep
       if(ncbd.selectedIndex=='0'){
         ND.checked=false;
         imt23.disabled=false;
       }
     }
+// Private vehicle NCB dependency
     if(age>4.6 && (vtype.value=='PvtCar'||vtype.value=='2W'||vtype.value=='2WSS'||vtype.value=='PvtCarS')){
       window.alert("NIL Dep is only applicable for age greater than 4.6, if ncb is min 20% for renewal & 25% for rollover");
+		// If NCB not selected, disallow Nil Dep
       if(ncbd.selectedIndex=='0'){
         ND.checked=false;
       }
@@ -940,6 +1224,19 @@ ncbd.addEventListener("input",function(){
   }
 });
 
+
+/* ==================================================
+   IDV CALCULATION & CORE OD RATE ENGINE
+====================================================
+This section controls:
+• IDV calculation based on depreciation
+• Mandatory input enforcement
+• Field enable / disable logic
+• Routing to correct OD rate function
+
+This function acts as the CENTRAL UNDERWRITING
+DECISION ENGINE.
+==================================================== */
 
 
 
@@ -966,13 +1263,23 @@ rsdate.addEventListener("change",function(){
   eTypeSelect.disabled=true;
   ELA.value=null;
   EMP.value=null;
-  //document.getElementById('rupees').textContent
+  
   
   console.log("Inside rsdate event");
   resetAddon();
   checkAddonApplicable();
   basicODRate(rdate.value,rsdate.value,zone.value,vtype.value,gvw.value,cc.value,nps.value);	
 });
+
+/* --------------------------------------------------
+   IDV CALCULATION
+-----------------------------------------------------
+Whenever Old IDV or Depreciation changes,
+New IDV is recalculated.
+
+Formula:
+New IDV = Old IDV × (100 − Dep%) / 100
+-------------------------------------------------- */
 oldidv.addEventListener("input",()=>{
   document.getElementById('rupees').textContent
   newidv.textContent=Number((Number(oldidv.value)*(100-Number(dep.value))/100).toFixed(0));
@@ -981,15 +1288,29 @@ dep.addEventListener("input",()=>{
   document.getElementById('rupees').textContent
   newidv.textContent=Number((Number(oldidv.value)*(100-Number(dep.value))/100).toFixed(0));
 });
-function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
-  //console.log("Inside Basic OD");
-  //console.log(grossVW);
-  //console.log(vehicleType);
 
+/* --------------------------------------------------
+   FUNCTION: basicODRate (MASTER ROUTER)
+-----------------------------------------------------
+Determines:
+• Which OD rate function to call
+• Which fields are mandatory
+• Which add-ons are allowed
+• Which inputs are disabled
+
+This is NOT a calculation function.
+It is a DECISION & CONTROL function.
+-------------------------------------------------- */
+function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
+	 // Ensure both dates exist
   if(r_date && rs_date){
       const tempDate=new Date(rdate.valueAsDate);
       const tempDate1=new Date();
+/* ------------------------------------------------
+     GOODS CARRYING VEHICLE (4W)
+  ------------------------------------------------- */
       if(vehicleType=="GCV4"){
+		  // Mandatory & disabled field configuration
         lld.disabled=false;
         paodch.checked=false;
         paodch.disabled=false;
@@ -1012,25 +1333,27 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         csinopd.selectedIndex='0';
         nopd.disabled=false;
         csinopd.disabled=false;
+		  // Disable incompatible add-ons
 	      OT.disabled=true;
 	      OT.checked=false;
         eTypeSelect.selectedIndex='0';
         eTypeSelect.disabled=true; 
         EVP.checked=false;
         EVP.disabled=true;     
-        
+        // GVW mandatory highlight
         gvw.style.backgroundColor='rgb(240, 160, 160)';
-        //gvw.focus();
-        
+               
         if(grossVW){
           console.log("yes");
           gcvODRate();
         }
         else{
-          //window.alert("Please Enter Gross Vehicle Weight");
-          
+                    
         }
       }
+	/* ------------------------------------------------
+     THREE WHEELER – GOODS
+  ------------------------------------------------- */
       else if(vehicleType=='3GCV'){
         lld.disabled=false;
         paodch.checked=false;
@@ -1057,16 +1380,18 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         csinopd.disabled=false;
 	      OT.disabled=true;
 	      OT.checked=false;
-        //eTypeSelect.selectedIndex='0';
-        //eTypeSelect.disabled=true; 
+
         EVP.checked=false;
         EVP.disabled=true;
         eTypeSelect.disabled=false;
         eTypeSelect.options[2].disabled=true;
-        //gvw.style.backgroundColor='rgb(240, 160, 160)';     
         threegcvODRate();
         
       }
+
+	/* ------------------------------------------------
+     THREE WHEELER – PASSENGER
+  ------------------------------------------------- */
       else if(vehicleType=='3PCV'){
         lld.disabled=false;
         paodch.checked=false;
@@ -1076,12 +1401,11 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         imt23.disabled=false;
         imt23.checked=false;
         cc.value=null;
-        //nps.value=null;
+
         cc.disabled=true;
         nps.disabled=false; //madatory field enabled
         nps.style.backgroundColor='rgb(240, 160, 160)'; //mandatory field highlight
         cc.style.backgroundColor='white';
-        //nps.style.backgroundColor='white';
         gvw.style.backgroundColor='white';
         gvw.disabled=true;
         nopp.value==null;
@@ -1094,16 +1418,18 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         csinopd.disabled=false;
 	      OT.disabled=true;
 	      OT.checked=false;
-        //eTypeSelect.selectedIndex='0';
         eTypeSelect.disabled=true; 
         EVP.checked=false;
         EVP.disabled=true;
         eTypeSelect.disabled=false;
-        eTypeSelect.options[2].disabled=true;
-        //gvw.style.backgroundColor='rgb(240, 160, 160)';     
+        eTypeSelect.options[2].disabled=true;   
         threepcvODRate();
         
       }
+
+/* ------------------------------------------------
+     MISCELLANEOUS VEHICLES
+  ------------------------------------------------- */
       else if(vehicleType=="MISC"){
         nopp.value==null;
         csinopp.selectedIndex='0';
@@ -1136,7 +1462,12 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         EVP.checked=false;
         EVP.disabled=true;
         miscODRate();
+ /* ------------------------------------------------
+     PRIVATE CAR
+  ------------------------------------------------- */
+
       }else if(vehicleType=="PvtCar") {
+		  
         nopp.value==null;
         csinopp.selectedIndex='0';
         nopp.disabled=false;
@@ -1149,6 +1480,7 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         paodch.checked=false;
         paodch.disabled=false;
         paodt.selectedIndex='0';
+		   // PA Owner Driver allowed only if same-day registration
         if(tempDate1.setHours(0,0,0,0)==tempDate.setHours(0,0,0,0)){
           paodt.disabled=false;
           paodt.options[2].disabled=true;
@@ -1169,13 +1501,17 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         
         eTypeSelect.disabled=false;  
         eTypeSelect.options[2].disabled=false;   
-        //cc.focus();
+
         cc.style.backgroundColor='rgb(240, 160, 160)';
           if(cubicCap){
             pvtCarODRate();
           }else{
-            //window.alert("Please Enter Cubic Capacity");
+
           }
+
+	/* ------------------------------------------------
+     TWO WHEELER
+  ------------------------------------------------- */
       }else if(vehicleType=='2W'){
         nopp.value==null;
         csinopp.selectedIndex='0';
@@ -1209,15 +1545,18 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
 	      OT.checked=false;
         EVP.disabled=true;
         eTypeSelect.disabled=false;      
-        //cc.value=null;
-        //cc.focus();
+        
         cc.style.backgroundColor='rgb(240, 160, 160)';
         if(cubicCap){
           twoWheelerODRate();
         }
         else{
-          //window.alert("Please Enter Cubic Capacity");
+          
         }
+
+ /* ------------------------------------------------
+     TAXI
+  ------------------------------------------------- */
       }else if(vehicleType=="PCV Taxi"){
         nopp.value==null;
         csinopp.selectedIndex='0';
@@ -1241,8 +1580,6 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         nps.disabled=false;
 	      OT.disabled=true;
 	      OT.checked=false;      
-        //cc.value=null;
-       // nps.value=null;
         nps.style.backgroundColor='rgb(240, 160, 160)';
         cc.style.backgroundColor='rgb(240, 160, 160)';
         eTypeSelect.selectedIndex='0';
@@ -1264,6 +1601,9 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
           //cc.focus();
          // window.alert("Please Enter Cubic Capacity");
         }
+/* ------------------------------------------------
+     BUS / SCHOOL BUS
+  ------------------------------------------------- */
       }else if((vehicleType=="PCV Bus") || (vehicleType=="PCV School Bus")){
         nopp.value==null;
         csinopp.selectedIndex='0';
@@ -2697,4 +3037,5 @@ function evProtect(){
     }
   }
 }
+
 
