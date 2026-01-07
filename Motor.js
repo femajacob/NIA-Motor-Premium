@@ -240,48 +240,130 @@ function pvtCarODRate(){
   console.log(age);
 /* -----------------------------------------------
      ELECTRIC / HYBRID VEHICLE OD RATES
-  ----------------------------------------------- */  
+  ----------------------------------------------- */
+  if(eTypeSelect.selectedIndex=='1'){
+	  // Apply zone-wise OD rate based on vehicle age
+    switch (zone.value){
+		//ZONE B
+      case 'zoneb':
+        if(age<5){
+          rate.textContent=3.191;
+        }else if(age>=5 && age<10){
+          rate.textContent=3.351;
+        }else{
+          rate.textContent=3.430;
+        }
+        break;
+
+		//ZONE C
+      case 'zonec':
+        if(age<5){
+          rate.textContent=3.191;
+        }else if(age>=5 && age<10){
+          rate.textContent=3.351;
+        }else{
+          rate.textContent=3.430;
+        }
+        break;
+
+			//ZONE A
+      case 'zonea':
+        if(age<5){
+          rate.textContent=3.283;
+        }else if(age>=5 && age<10){
+          rate.textContent=3.447;
+        }else{
+          rate.textContent=3.529;
+        }
+        break;  
+
+    }
+    return;
+  }
+
 /* -----------------------------------------------
      INTERNAL COMBUSTION ENGINE (ICE) VEHICLES
   ----------------------------------------------- */
-const ageBand =
-  age < 5 ? 0 :
-  age < 10 ? 1 : 2;
+  switch(zone.value){
+		  //ZONE B
+    case 'zoneb':
+      if(age<5){
+        if(cc.value<=1000)
+         rate.textContent=3.039;
+        else if(cc.value>1000 && cc.value<=1500)
+          rate.textContent=3.191;
+        else
+          rate.textContent=3.343; 
+      }else if(age>=5&&age<10){
+        if(cc.value<=1000)
+          rate.textContent=3.191;
+         else if(cc.value>1000 && cc.value<=1500)
+           rate.textContent=3.351;
+         else
+           rate.textContent=3.510; 
+      }else{
+        if(cc.value<=1000)
+          rate.textContent=3.267;
+         else if(cc.value>1000 && cc.value<=1500)
+           rate.textContent=3.430;
+         else
+           rate.textContent=3.594; 
+      }
+      break;
+		//ZONE C
+      case 'zonec':
+        if(age<5){
+          if(cc.value<=1000)
+           rate.textContent=3.039;
+          else if(cc.value>1000 && cc.value<=1500)
+            rate.textContent=3.191;
+          else
+            rate.textContent=3.343; 
+        }else if(age>=5&&age<10){
+          if(cc.value<=1000)
+            rate.textContent=3.191;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.351;
+           else
+             rate.textContent=3.510; 
+        }else{
+          if(cc.value<=1000)
+            rate.textContent=3.267;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.430;
+           else
+             rate.textContent=3.594; 
+        }
+      break;
+		  //ZONE A
+      case 'zonea':
+        if(age<5){
+          if(cc.value<=1000)
+           rate.textContent=3.127;
+          else if(cc.value>1000 && cc.value<=1500)
+            rate.textContent=3.283;
+          else
+            rate.textContent=3.440; 
+        }else if(age>=5&&age<10){
+          if(cc.value<=1000)
+            rate.textContent=3.283;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.447;
+           else
+             rate.textContent=3.612; 
+        }else{
+          if(cc.value<=1000)
+            rate.textContent=3.362;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.529;
+           else
+             rate.textContent=3.698; 
+        }
+      break;
 
-const ccBand =
-  cc.value <= 1000 ? 0 :
-  cc.value <= 1500 ? 1 : 2;
-
-const evRates = {
-  zoneb: [3.191, 3.351, 3.430],
-  zonec: [3.191, 3.351, 3.430],
-  zonea: [3.283, 3.447, 3.529]
-};
-
-const iceRates = {
-  zoneb: [
-    [3.039, 3.191, 3.343],
-    [3.191, 3.351, 3.510],
-    [3.267, 3.430, 3.594]
-  ],
-  zonec: [
-    [3.039, 3.191, 3.343],
-    [3.191, 3.351, 3.510],
-    [3.267, 3.430, 3.594]
-  ],
-  zonea: [
-    [3.127, 3.283, 3.440],
-    [3.283, 3.447, 3.612],
-    [3.362, 3.529, 3.698]
-  ]
-};
-
-if (eTypeSelect.selectedIndex == '1') {
-  rate.textContent = evRates[zone.value][ageBand];
-} else {
-  rate.textContent = iceRates[zone.value][ageBand][ccBand];
 }
 	
+}
 
 /* --------------------------------------------------
    FUNCTION: twoWheelerODRate
@@ -306,62 +388,139 @@ function twoWheelerODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   console.log(age);
 
 /* -----------------------------------------------
-     TWO WHEELER OD RATES (LOOKUP TABLE VERSION)
------------------------------------------------ */
-
-// AGE BAND: 0 = <5 yrs, 1 = 5–10 yrs, 2 = >10 yrs
-const ageBand =
-  age < 5 ? 0 :
-  age < 10 ? 1 : 2;
-
-// CC BAND: 0 = ≤150cc, 1 = 151–350cc, 2 = >350cc
-const ccBand =
-  cc.value <= 150 ? 0 :
-  cc.value <= 350 ? 1 : 2;
-
-/* -----------------------------------------------
      ELECTRIC TWO WHEELER OD RATES
------------------------------------------------ */
-const electricTWODRates = {
-  zoneb: [1.760, 1.848, 1.892],
-  zonec: [1.760, 1.848, 1.892],
-  zonea: [1.793, 1.883, 1.928]
-};
+  ----------------------------------------------- */
+  if(eTypeSelect.selectedIndex==1){
+    switch (zone.value){
+			
+		//ZONE B
+      case 'zoneb':
+        if(age<5){
+          rate.textContent=1.760;
+        }else if(age>=5 && age<10){
+          rate.textContent=1.848;
+        }else{
+          rate.textContent=1.892;
+        }
+        break;
+			
+			//ZONE C
+      case 'zonec':
+        if(age<5){
+          rate.textContent=1.760;
+        }else if(age>=5 && age<10){
+          rate.textContent=1.848;
+        }else{
+          rate.textContent=1.892;
+        }
+        break;
 
-/* -----------------------------------------------
+			//ZONE A
+      case 'zonea':
+        if(age<5){
+          rate.textContent=1.793;
+        }else if(age>=5 && age<10){
+          rate.textContent=1.883;
+        }else{
+          rate.textContent=1.928;
+        }
+        break;  
+
+    }
+    return;
+  }
+
+ /* -----------------------------------------------
      ICE TWO WHEELER OD RATES
------------------------------------------------ */
-const iceTWODRates = {
-  zoneb: [
-    [1.676, 1.760, 1.844],
-    [1.760, 1.848, 1.936],
-    [1.802, 1.892, 1.982]
-  ],
-  zonec: [
-    [1.676, 1.760, 1.844],
-    [1.760, 1.848, 1.936],
-    [1.802, 1.892, 1.982]
-  ],
-  zonea: [
-    [1.708, 1.793, 1.879],
-    [1.793, 1.883, 1.973],
-    [1.836, 1.928, 2.020]
-  ]
-};
+  ----------------------------------------------- */
+  switch(zone.value){
+		  //ZONE B
+    case 'zoneb':
+      if(age<5){
+        if(cc.value<=150)
+         rate.textContent=1.676;
+        else if(cc.value>150 && cc.value<=350)
+          rate.textContent=1.760;
+        else
+          rate.textContent=1.844;
+      }else if(age>=5&&age<10){
+        if(cc.value<=150)
+          rate.textContent=1.760;
+         else if(cc.value>150 && cc.value<=350)
+           rate.textContent=1.848;
+         else
+           rate.textContent=1.936; 
+      }else{
+        if(cc.value<=150)
+          rate.textContent=1.802;
+         else if(cc.value>150 && cc.value<=350)
+           rate.textContent=1.892;
+         else
+           rate.textContent=1.982; 
+      }
+      break;
 
-/* -----------------------------------------------
-     RATE SELECTION
------------------------------------------------ */
-if (eTypeSelect.selectedIndex == 1) {
-  // ELECTRIC TWO WHEELER
-  rate.textContent = electricTWODRates[zone.value][ageBand];
-} else {
-  // ICE TWO WHEELER
-  rate.textContent = iceTWODRates[zone.value][ageBand][ccBand];
+		  //ZONE C
+      case 'zonec':
+        if(age<5){
+          if(cc.value<=150)
+           rate.textContent=1.676;
+          else if(cc.value>150 && cc.value<=350)
+            rate.textContent=1.760;
+          else
+            rate.textContent=1.844;
+        }else if(age>=5&&age<10){
+          if(cc.value<=150)
+            rate.textContent=1.760;
+           else if(cc.value>150 && cc.value<=350)
+             rate.textContent=1.848;
+           else
+             rate.textContent=1.936; 
+        }else{
+          if(cc.value<=150)
+            rate.textContent=1.802;
+           else if(cc.value>150 && cc.value<=350)
+             rate.textContent=1.892;
+           else
+             rate.textContent=1.982; 
+        }
+      break;
+
+		  //ZONE A
+      case 'zonea':
+        if(age<5){
+          if(cc.value<=150)
+           rate.textContent=1.708;
+          else if(cc.value>150 && cc.value<=350)
+            rate.textContent=1.793;
+          else
+            rate.textContent=1.879;
+        }else if(age>=5&&age<10){
+          if(cc.value<=150)
+            rate.textContent=1.793;
+           else if(cc.value>150 && cc.value<=350)
+             rate.textContent=1.883;
+           else
+             rate.textContent=1.973; 
+        }else{
+          if(cc.value<=150)
+            rate.textContent=1.836;
+           else if(cc.value>150 && cc.value<=350)
+             rate.textContent=1.928;
+           else
+             rate.textContent=2.020; 
+        }
+      break;
+
 }
 /* ==================================================
    COMMERCIAL & PASSENGER VEHICLE – OD RATE FUNCTIONS
@@ -402,46 +561,93 @@ function taxiODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   console.log(age);
- /* -----------------------------------------------
-     OD RATES – OPTIMIZED LOOKUP TABLE VERSION
-     (Replaces entire switch(zone.value) block)
------------------------------------------------ */
+  switch(zone.value){
+		  //ZONE B
+    case 'zoneb':
+      if(age<5){
+        if(cc.value<=1000)
+         rate.textContent=3.191;
+        else if(cc.value>1000 && cc.value<=1500)
+          rate.textContent=3.351;
+        else
+          rate.textContent=3.510; 
+      }else if(age>=5&&age<7){
+        if(cc.value<=1000)
+          rate.textContent=3.271;
+         else if(cc.value>1000 && cc.value<=1500)
+           rate.textContent=3.435;
+         else
+           rate.textContent=3.598; 
+      }else{
+        if(cc.value<=1000)
+          rate.textContent=3.351;
+         else if(cc.value>1000 && cc.value<=1500)
+           rate.textContent=3.519;
+         else
+           rate.textContent=3.686; 
+      }
+      break;
+		  //ZONE C
+      case 'zonec':
+        if(age<5){
+          if(cc.value<=1000)
+           rate.textContent=3.191;
+          else if(cc.value>1000 && cc.value<=1500)
+            rate.textContent=3.351;
+          else
+            rate.textContent=3.510; 
+        }else if(age>=5&&age<7){
+          if(cc.value<=1000)
+            rate.textContent=3.271;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.435;
+           else
+             rate.textContent=3.598; 
+        }else{
+          if(cc.value<=1000)
+            rate.textContent=3.351;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.519;
+           else
+             rate.textContent=3.686; 
+        }
+      break;
+		  //ZONE A
+      case 'zonea':
+        if(age<5){
+          if(cc.value<=1000)
+           rate.textContent=3.284;
+          else if(cc.value>1000 && cc.value<=1500)
+            rate.textContent=3.448;
+          else
+            rate.textContent=3.612; 
+        }else if(age>=5&&age<7){
+          if(cc.value<=1000)
+            rate.textContent=3.366;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.534;
+           else
+             rate.textContent=3.703; 
+        }else{
+          if(cc.value<=1000)
+            rate.textContent=3.448;
+           else if(cc.value>1000 && cc.value<=1500)
+             rate.textContent=3.620;
+           else
+             rate.textContent=3.793; 
+        }
+      break;
 
-{
-  // AGE BAND: 0 = <5 yrs, 1 = 5–7 yrs, 2 = >7 yrs
-  const ageBand =
-    age < 5 ? 0 :
-    age < 7 ? 1 : 2;
-
-  // CC BAND: 0 = ≤1000cc, 1 = 1001–1500cc, 2 = >1500cc
-  const ccBand =
-    cc.value <= 1000 ? 0 :
-    cc.value <= 1500 ? 1 : 2;
-
-  // ZONE → AGE → CC lookup table
-  const odRates = {
-    zoneb: [
-      [3.191, 3.351, 3.510], // age < 5
-      [3.271, 3.435, 3.598], // age 5–7
-      [3.351, 3.519, 3.686]  // age > 7
-    ],
-    zonec: [
-      [3.191, 3.351, 3.510],
-      [3.271, 3.435, 3.598],
-      [3.351, 3.519, 3.686]
-    ],
-    zonea: [
-      [3.284, 3.448, 3.612],
-      [3.366, 3.534, 3.703],
-      [3.448, 3.620, 3.793]
-    ]
-  };
-
-  // Final rate selection
-  rate.textContent = odRates[zone.value][ageBand][ccBand];
 }
+}
+
 /* --------------------------------------------------
    FUNCTION: pcvBusODRate
 -----------------------------------------------------
@@ -466,29 +672,48 @@ function pcvBusODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-  	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   console.log(age);
-  /* -----------------------------------------------
-     OD RATES – LOOKUP TABLE VERSION
-     (Replaces entire switch(zone.value) block)
------------------------------------------------ */
+  switch(zone.value){
+		  //ZONE B
+    case 'zoneb':
+      if(age<5){
+        rate.textContent=1.672;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.714;
+      }else{
+        rate.textContent=1.756;
+      }
+      break;
+		  //ZONE B
+      case 'zonec':
+      if(age<5){
+        rate.textContent=1.656;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.697;
+      }else{
+        rate.textContent=1.739;
+      }
+      break;
+		  //ZONE B
+      case 'zonea':
+      if(age<5){
+        rate.textContent=1.680;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.722;
+      }else{
+        rate.textContent=1.764;
+      }
+      break;
 
-{
-  // AGE BAND: 0 = <5 yrs, 1 = 5–7 yrs, 2 = >7 yrs
-  const ageBand =
-    age < 5 ? 0 :
-    age < 7 ? 1 : 2;
-
-  // ZONE → AGE lookup table
-  const odRates = {
-    zoneb: [1.672, 1.714, 1.756],
-    zonec: [1.656, 1.697, 1.739],
-    zonea: [1.680, 1.722, 1.764]
-  };
-
-  // Final rate selection
-  rate.textContent = odRates[zone.value][ageBand];
 }
+}
+
 /* --------------------------------------------------
    FUNCTION: miscODRate
 -----------------------------------------------------
@@ -507,23 +732,43 @@ function miscODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   console.log(age);
-  {
-  // AGE BAND: 0 = <5 yrs, 1 = 5–7 yrs, 2 = >7 yrs
-  const ageBand =
-    age < 5 ? 0 :
-    age < 7 ? 1 : 2;
+  switch(zone.value){
+    case 'zoneb':
+      if(age<5){
+        rate.textContent=1.202;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.232;
+      }else{
+        rate.textContent=1.262;
+      }
+      break;
+      case 'zonec':
+      if(age<5){
+        rate.textContent=1.190;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.220;
+      }else{
+        rate.textContent=1.250;
+      }
+      break;
+      case 'zonea':
+      if(age<5){
+        rate.textContent=1.208;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.238;
+      }else{
+        rate.textContent=1.268;
+      }
+      break;
 
-  // ZONE → AGE lookup table
-  const odRates = {
-    zoneb: [1.202, 1.232, 1.262],
-    zonec: [1.190, 1.220, 1.250],
-    zonea: [1.208, 1.238, 1.268]
-  };
-
-  // Final rate selection
-  rate.textContent = odRates[zone.value][ageBand];
+}
 }
 
 /* --------------------------------------------------
@@ -544,29 +789,47 @@ function threegcvODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-  	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   console.log(age);
- /* -----------------------------------------------
-     OD RATES – LOOKUP TABLE VERSION
-     (Replaces entire switch(zone.value) block)
------------------------------------------------ */
-
-{
-  // AGE BAND: 0 = <5 yrs, 1 = 5–7 yrs, 2 = >7 yrs
-  const ageBand =
-    age < 5 ? 0 :
-    age < 7 ? 1 : 2;
-
-  // ZONE → AGE lookup table
-  const odRates = {
-    zoneb: [1.656, 1.697, 1.739],
-    zonec: [1.640, 1.681, 1.722],
-    zonea: [1.664, 1.706, 1.747]
-  };
-
-  // Final rate selection
-  rate.textContent = odRates[zone.value][ageBand];
+  switch(zone.value){
+		  //ZONE B
+    case 'zoneb':
+      if(age<5){
+        rate.textContent=1.656;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.697;
+      }else{
+        rate.textContent=1.739;
+      }
+      break;
+		  //ZONE C
+      case 'zonec':
+      if(age<5){
+        rate.textContent=1.640;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.681;
+      }else{
+        rate.textContent=1.722;
+      }
+      break;
+      case 'zonea':
+		  //ZONE A
+      if(age<5){
+        rate.textContent=1.664;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.706;
+      }else{
+        rate.textContent=1.747;
+      }
+      break;
 }
+}
+
 /* --------------------------------------------------
    FUNCTION: threepcvODRate
 -----------------------------------------------------
@@ -585,28 +848,45 @@ function threepcvODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-  	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   console.log(age);
-  /* -----------------------------------------------
-     OD RATES – LOOKUP TABLE VERSION
-     (Replaces entire switch(zone.value) block)
------------------------------------------------ */
-
-{
-  // AGE BAND: 0 = <5 yrs, 1 = 5–7 yrs, 2 = >7 yrs
-  const ageBand =
-    age < 5 ? 0 :
-    age < 7 ? 1 : 2;
-
-  // ZONE → AGE lookup table
-  const odRates = {
-    zoneb: [1.272, 1.304, 1.336],
-    zonec: [1.260, 1.292, 1.323],
-    zonea: [1.278, 1.310, 1.342]
-  };
-
-  // Final rate selection
-  rate.textContent = odRates[zone.value][ageBand];
+  switch(zone.value){
+		  //ZONE B
+    case 'zoneb':
+      if(age<5){
+        rate.textContent=1.272;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.304;
+      }else{
+        rate.textContent=1.336;
+      }
+      break;
+		  //ZONE C
+      case 'zonec':
+      if(age<5){
+        rate.textContent=1.260;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.292;
+      }else{
+        rate.textContent=1.323;
+      }
+      break;
+      case 'zonea':
+		  //ZONE A
+      if(age<5){
+        rate.textContent=1.278;
+      }else if(age>=5&&age<7){
+        rate.textContent=1.310;
+      }else{
+        rate.textContent=1.342;
+      }
+      break;
+}
 }
 /* ==================================================
    EVENT LISTENERS – INPUT CHANGE HANDLING
@@ -825,7 +1105,12 @@ ND.addEventListener("change",function(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
- 	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   if(ND.checked){
 	  // IMT 23 mandatory for commercial vehicles with Nil Dep
     if(vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC'){
@@ -877,7 +1162,12 @@ ncbd.addEventListener("input",function(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-  	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
+  if(days<1460){
+    age=days/365;
+  }
+  else{
+    age=(days+1)/365.25;
+  }
   if(ND.checked){
 	  // Commercial vehicle NCB dependency
     if(age>2.6 && (vtype.value=='GCV4' || vtype.value=='PCV Bus'||vtype.value=='PCV School Bus'||vtype.value=='MISC' || vtype.vlaue=='PCV Taxi')){
@@ -1423,92 +1713,88 @@ Returns:
 • false → mandatory data missing
 -------------------------------------------------- */
 
-function basicODPremium() {
-
-  const rateVal = Number(rate.textContent);
-  const idvVal  = Number(newidv.textContent);
-  const baseOD  = (rateVal * idvVal) / 100;
-  const odField = document.getElementById("OD1P");
-
-  /* ----------------------------------------------
+function basicODPremium(){
+	 /* ----------------------------------------------
      PRIVATE CAR / TWO WHEELER
   ---------------------------------------------- */
-  if (
-    vtype.value === "PvtCar" ||
-    vtype.value === "PvtCarS" ||
-    vtype.value === "2W" ||
-    vtype.value === "2wss"
-  ) {
-
-    if (cc.value == null) {
-      window.alert("Cubic Capacity is a Manadatory Input For Calculation of Premium");
-      return false;
-    }
-
-    odField.textContent = baseOD.toFixed(2);
-    return true;
-  }
-
-  /* ----------------------------------------------
+  if(vtype.value=="PvtCar" ||vtype.value=="PvtCarS" ||vtype.value=="2W"||vtype.value=="2wss"){
+		if(cc.value==null){
+			// Cubic Capacity is mandatory
+			window.alert("Cubic Capacity is a Manadatory Input For Calculation of Premium");
+			return false;
+		}
+			 // Base OD = Rate % × IDV
+		else{
+			document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
+			return true;
+		}
+/* ----------------------------------------------
      GOODS CARRYING VEHICLE (4W)
   ---------------------------------------------- */
-  if (vtype.value === "GCV4") {
-
-    if (gvw.value == null) {
-      window.alert("Gross Vehicle Weight is a Manadatory Input For Calculation of Premium");
-      return false;
-    }
-
-    let odAmount = baseOD;
-
-    if (gvw.value > 12000) {
-      odAmount += (gvw.value - 12000) * 0.27;
-    }
-
-    odField.textContent = odAmount.toFixed(2);
-    return true;
-  }
-
-  /* ----------------------------------------------
+	}else if(vtype.value=="GCV4"){
+	  // GVW mandatory
+		if(gvw.value==null){
+			window.alert("Gross Vehicle Weight is a Manadatory Input For Calculation of Premium");
+			return false;
+		}
+		else{
+			// Up to 12,000 kg → simple rate
+			if(gvw.value<=12000){
+				document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
+				return true;
+			}
+			else{
+				 // Above 12,000 kg → per kg loading
+				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+(gvw.value-12000)*0.27).toFixed(2);
+				return true;
+			}
+		}
+/* ----------------------------------------------
      TAXI
   ---------------------------------------------- */
-  if (vtype.value === "PCV Taxi") {
-
-    if (cc.value == null || nps.value == null || nps.value > 6) {
-      window.alert("Cubic Capacity and No Of passengers(Less Than 7) are required Field For Taxi");
-      return false;
-    }
-
-    odField.textContent = baseOD.toFixed(2);
-    return true;
-  }
-
-  /* ----------------------------------------------
+	}else if(vtype.value=="PCV Taxi"){
+		if(cc.value==null || nps.value==null || nps.value>6){
+			// CC and passenger count mandatory
+			window.alert("Cubic Capacity and No Of passengers(Less Than 7) are required Field For Taxi");
+			return false;
+		}else{
+			document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
+			return true;
+		}
+/* ----------------------------------------------
      BUS / SCHOOL BUS
   ---------------------------------------------- */
-  if (vtype.value === "PCV Bus" || vtype.value === "PCV School Bus") {
-
-    if (nps.value == null || nps.value <= 6) {
-      window.alert("Number of Passengers Must Be Greater Than 6");
-      return false;
-    }
-
-    let loading = 0;
-
-    if (nps.value <= 18) loading = 350;
-    else if (nps.value <= 36) loading = 450;
-    else if (nps.value <= 60) loading = 550;
-    else loading = 680;
-
-    odField.textContent = (baseOD + loading).toFixed(2);
-    return true;
-  }
-
-  /* ----------------------------------------------
+	}else if(vtype.value=="PCV Bus" || vtype.value=="PCV School Bus"){
+		if(nps.value==null || nps.value<=6){
+			window.alert("Number of Passengers Must Be Greater Than 6");
+			return false;
+		}
+			// Passenger-based fixed loading
+		else{
+			if(nps.value>=7 && nps.value<=18){
+				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+350).toFixed(2);
+				return true;
+			}
+			else if(nps.value>=19 && nps.value<=36){
+				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+450).toFixed(2);
+				return true;
+			}
+			else if(nps.value>=37 && nps.value<=60){
+				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+550).toFixed(2);
+				return true;
+			}
+			else{
+				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+680).toFixed(2);
+				return true;
+			}
+		}
+	}else{
+/* ----------------------------------------------
      DEFAULT (Misc, 3W, Others)
   ---------------------------------------------- */
-  odField.textContent = baseOD.toFixed(2);
-  return true;
+		document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
+		return true;
+	}
 }
 
 /* ==================================================
@@ -1532,186 +1818,521 @@ Purpose:
 • Apply passenger / employee liabilities
 • Handle multi-year TP for new vehicles
 -------------------------------------------------- */
-function basicTP() {
-
-  /* -------------------- helpers -------------------- */
-  const show = id => document.getElementById(id).style.display = 'flex';
-  const set  = (id, val) => document.getElementById(id).textContent = val;
-
-  const applyCommonTPAddons = (mult = 1) => {
-
-    if (LPG.checked) {
-      set("Liability8P", 60 * mult);
-      show("Liability8");
+function basicTP(){
+  const today1=new Date();
+	const reg_date=new Date(rdate.valueAsDate)
+  console.log(today1.setHours(0,0,0,0));
+  console.log(reg_date.setHours(0,0,0,0));
+  console.log("basicTP");
+	  /* ------------------------------------------------
+     GOODS CARRYING VEHICLE (4W)
+  ------------------------------------------------- */
+	if(vtype.value=="GCV4"){
+		// LPG Kit TP premium
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
     }
-
-    if (GE.checked) {
-      set("Liability7P", 100 * mult);
-      show("Liability7");
+		// Trailer TP premium
+    if(TrOD.value){
+      document.getElementById('Liability9').style.display='flex';
+      document.getElementById("Liability9P").textContent=2485;
     }
-
-    if (nopd.value) {
-      const rate = (csinopd.selectedIndex == '1') ? 60 : 120;
-      set("Liability5P", nopd.value * rate * mult);
-      show("Liability5");
+		// Geographical Extension TP
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
     }
-
-    if (nopp?.value) {
-      const rate = (csinopp.selectedIndex == '1') ? 50 : 100;
-      set("Liability6P", nopp.value * rate * mult);
-      show("Liability6");
+		// Paid Driver TP
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+		  
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
     }
-  };
-
-  const today = new Date().setHours(0,0,0,0);
-  const reg   = new Date(rdate.valueAsDate).setHours(0,0,0,0);
-  const isNewVehicle = today === reg;
-
-  /* -------------------- GCV (4W) -------------------- */
-  if (vtype.value === "GCV4") {
-
-    applyCommonTPAddons();
-
-    if (TrOD.value) {
-      show("Liability9");
-      set("Liability9P", 2485);
+		// Base TP premium by GVW slab
+    document.getElementById('Liability1').style.display='flex';
+		if(gvw.value<=7500){
+			document.getElementById("Liability1P").textContent=16049;
+		}
+		else if(gvw.value>7500 && gvw.value<=12000){
+			document.getElementById("Liability1P").textContent=27186;	
+		}
+		else if(gvw.value>12000 && gvw.value<=20000){
+			document.getElementById("Liability1P").textContent=35313;
+		}
+		else if(gvw.value>20000 && gvw.value<=40000){
+			document.getElementById("Liability1P").textContent=43950;
+		}
+		else{
+			document.getElementById("Liability1P").textContent=44242;
+		}
+	}
+/* ------------------------------------------------
+     THREE WHEELER – GOODS
+  ------------------------------------------------- */
+  else if(vtype.value=='3GCV'){
+	  // Electric vehicles have lower TP tariff
+    if(eTypeSelect.selectedIndex=='0'){
+		// Common TP additions
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
     }
-
-    show("Liability1");
-
-    if (gvw.value <= 7500) set("Liability1P", 16049);
-    else if (gvw.value <= 12000) set("Liability1P", 27186);
-    else if (gvw.value <= 20000) set("Liability1P", 35313);
-    else if (gvw.value <= 40000) set("Liability1P", 43950);
-    else set("Liability1P", 44242);
-
-    return;
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
+    }
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
+    }
+    document.getElementById('Liability1').style.display='flex';
+    document.getElementById("Liability1P").textContent=4492;
+  }
+  else{
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
+    }
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
+    }
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
+    }
+    document.getElementById('Liability1').style.display='flex';
+    document.getElementById("Liability1P").textContent=3139;
+  }
   }
 
-  /* -------------------- 3W GOODS -------------------- */
-  if (vtype.value === "3GCV") {
-
-    applyCommonTPAddons();
-    show("Liability1");
-
-    set(
-      "Liability1P",
-      eTypeSelect.selectedIndex == '0' ? 4492 : 3139
-    );
-    return;
-  }
-
-  /* -------------------- 3W PASSENGER -------------------- */
-  if (vtype.value === "3PCV") {
-
-    applyCommonTPAddons();
-    show("Liability1");
-    show("Liability2");
-
-    if (eTypeSelect.selectedIndex == '0') {
-      set("Liability1P", 2371);
-      set("Liability2P", nps.value * 1134);
-    } else {
-      set("Liability1P", 1539);
-      set("Liability2P", nps.value * 737);
+	/* ------------------------------------------------
+     THREE WHEELER – PASSENGER
+  ------------------------------------------------- */
+  else if(vtype.value=='3PCV'){
+    if(eTypeSelect.selectedIndex=='0'){
+      if(LPG.checked){
+        document.getElementById("Liability8P").textContent=60;
+        document.getElementById('Liability8').style.display='flex';
+      }
+      if(GE.checked){
+        document.getElementById("Liability7P").textContent=100;
+        document.getElementById('Liability7').style.display='flex';
+      }
+      if(nopd.value){
+        if(csinopd.selectedIndex=='1'){
+          document.getElementById("Liability5P").textContent=nopd.value*60;
+          document.getElementById('Liability5').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability5P").textContent=nopd.value*120;
+          document.getElementById('Liability5').style.display='flex';
+        }
+      }
+      document.getElementById('Liability1').style.display='flex';
+      document.getElementById('Liability2').style.display='flex';
+      document.getElementById("Liability1P").textContent=2371;
+      document.getElementById("Liability2P").textContent=nps.value*1134;
     }
-    return;
+    else{
+      document.getElementById('Liability1').style.display='flex';
+      document.getElementById('Liability2').style.display='flex';
+      document.getElementById("Liability1P").textContent=1539;
+      document.getElementById("Liability2P").textContent=nps.value*737;
+
+    }  
   }
-
-  /* -------------------- BUS / SCHOOL BUS -------------------- */
-  if (vtype.value === "PCV Bus" || vtype.value === "PCV School Bus") {
-
-    applyCommonTPAddons();
-    show("Liability1");
-    show("Liability2");
-
-    if (vtype.value === "PCV Bus") {
-      set("Liability1P", 14343);
-      set("Liability2P", nps.value * 877);
-    } else {
-      set("Liability1P", 12192);
-      set("Liability2P", nps.value * 745);
+	/* ------------------------------------------------
+     BUS / SCHOOL BUS
+  ------------------------------------------------- */
+	else if(vtype.value=="PCV Bus"){
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
     }
-    return;
-  }
-
-  /* -------------------- MISC -------------------- */
-  if (vtype.value === "MISC") {
-
-    applyCommonTPAddons();
-
-    if (TrOD.value) {
-      show("Liability9");
-      set("Liability9P", 2485);
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
     }
-
-    show("Liability1");
-    set("Liability1P", 7267);
-    return;
-  }
-
-  /* -------------------- TAXI -------------------- */
-  if (vtype.value === "PCV Taxi") {
-
-    applyCommonTPAddons();
-    show("Liability1");
-    show("Liability2");
-
-    if (cc.value <= 1000) {
-      set("Liability1P", 6040);
-      set("Liability2P", nps.value * 1162);
-    } else if (cc.value <= 1500) {
-      set("Liability1P", 7940);
-      set("Liability2P", nps.value * 978);
-    } else {
-      set("Liability1P", 10523);
-      set("Liability2P", nps.value * 1117);
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
+    }  
+    document.getElementById('Liability1').style.display='flex';
+    document.getElementById('Liability2').style.display='flex';
+		document.getElementById("Liability1P").textContent=14343;
+		document.getElementById("Liability2P").textContent=nps.value*877;
+	}
+	else if(vtype.value=="PCV School Bus"){
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
     }
-    return;
-  }
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
+    }
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
+    }  
+    document.getElementById('Liability1').style.display='flex';
+    document.getElementById('Liability2').style.display='flex';
+		document.getElementById("Liability1P").textContent=12192;
+		document.getElementById("Liability2P").textContent=nps.value*745;
+	}
+	/* ------------------------------------------------
+     MISC D Vehicles
+  ------------------------------------------------- */
+	else if(vtype.value=="MISC"){
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
+    }
+    if(TrOD.value){
+      document.getElementById('Liability9').style.display='flex';
+      document.getElementById('Liability9P').textContent=2485;
+    }
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
+    }
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
+    }  
+    document.getElementById('Liability1').style.display='flex';
+		document.getElementById("Liability1P").textContent=7267;
+	}
 
-  /* -------------------- PRIVATE CAR -------------------- */
-  if (vtype.value === "PvtCar") {
+	/* ------------------------------------------------
+     TAXI
+  ------------------------------------------------- */
+	else if(vtype.value=="PCV Taxi"){
+    if(LPG.checked){
+      document.getElementById("Liability8P").textContent=60;
+      document.getElementById('Liability8').style.display='flex';
+    }
+    if(GE.checked){
+      document.getElementById("Liability7P").textContent=100;
+      document.getElementById('Liability7').style.display='flex';
+    }
+    if(nopd.value){
+      if(csinopd.selectedIndex=='1'){
+        document.getElementById("Liability5P").textContent=nopd.value*60;
+        document.getElementById('Liability5').style.display='flex';
+      }
+      else{
+        document.getElementById("Liability5P").textContent=nopd.value*120;
+        document.getElementById('Liability5').style.display='flex';
+      }
+    }  
+    document.getElementById('Liability1').style.display='flex';
+    document.getElementById('Liability2').style.display='flex';
+		if(cc.value<=1000){
+			document.getElementById("Liability1P").textContent=6040;
+			document.getElementById("Liability2P").textContent=nps.value*1162;
+		}
+		else if(cc.value>1000 && cc.value<=1500){
+			document.getElementById("Liability1P").textContent=7940;
+			document.getElementById("Liability2P").textContent=nps.value*978;
+		}
+		else{
+			document.getElementById("Liability1P").textContent=10523;
+			document.getElementById("Liability2P").textContent=nps.value*1117;
+		}
+	}
+	  /* ------------------------------------------------
+     PRIVATE CAR
+  ------------------------------------------------- */
+	else if(vtype.value=="PvtCar"){
+    document.getElementById('Liability1').style.display='flex';
+		if(today1.setHours(0,0,0,0)==reg_date.setHours(0,0,0,0)){
+			// Multi-year TP for new vehicles
+			if(eTypeSelect.selectedIndex=='0'){
+        if(cc.value<=1000){
+          document.getElementById("Liability1P").textContent=6521;
+        }
+        else if(cc.value>1000 && cc.value<=1500){
+          document.getElementById("Liability1P").textContent=10640;
+        }
+        else{
+          document.getElementById("Liability1P").textContent=24596;
+        }
+      }
+			 // EV / Hybrid discount
+		else if(eTypeSelect.selectedIndex=='1'){
+        if(cc.value<=30){
+          document.getElementById("Liability1P").textContent=Math.round(6521*0.85);
+        }
+        else if(cc.value>30 && cc.value<=65){
+          document.getElementById("Liability1P").textContent=Math.round(10640*0.85);
+        }
+        else{
+          document.getElementById("Liability1P").textContent=Math.round(24596*0.85);
+        }
+      }else{
+        if(cc.value<=1000){
+          document.getElementById("Liability1P").textContent=Math.round(6521*0.925);
+        }
+        else if(cc.value>1000 && cc.value<=1500){
+          document.getElementById("Liability1P").textContent=Math.round(10640*0.925);
+        }
+        else{
+          document.getElementById("Liability1P").textContent=Math.round(24596*0.925);
+        }
+      }  
+      if(LPG.checked){
+        document.getElementById("Liability8P").textContent=60*3;
+        document.getElementById('Liability8').style.display='flex';
+      }
+      if(GE.checked){
+        document.getElementById("Liability7P").textContent=100*3;
+        document.getElementById('Liability7').style.display='flex';
+      }
+      if(nopd.value){
+        if(csinopd.selectedIndex=='1'){
+          document.getElementById("Liability5P").textContent=nopd.value*50*3;
+          document.getElementById('Liability5').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability5P").textContent=nopd.value*100*3;
+          document.getElementById('Liability5').style.display='flex';
+        }
+      }
+      if(nopp.value){
+        if(csinopp.selectedIndex=='1'){
+          document.getElementById("Liability6P").textContent=nopp.value*50*3;
+          document.getElementById('Liability6').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability6P").textContent=nopp.value*100*3;
+          document.getElementById('Liability6').style.display='flex';
+        }
+      }    
+		}else{
+      if(LPG.checked){
+        document.getElementById("Liability8P").textContent=60;
+        document.getElementById('Liability8').style.display='flex';
+      }
+      if(GE.checked){
+        document.getElementById("Liability7P").textContent=100;
+        document.getElementById('Liability7').style.display='flex';
+      }
+      if(nopd.value){
+        if(csinopd.selectedIndex=='1'){
+          document.getElementById("Liability5P").textContent=nopd.value*50;
+          document.getElementById('Liability5').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability5P").textContent=nopd.value*100;
+          document.getElementById('Liability5').style.display='flex';
+        }
+      }
+      if(nopp.value){
+        if(csinopp.selectedIndex=='1'){
+          document.getElementById("Liability6P").textContent=nopp.value*50;
+          document.getElementById('Liability6').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability6P").textContent=nopp.value*100;
+          document.getElementById('Liability6').style.display='flex';
+        }
+      }
+      if(eTypeSelect.selectedIndex==0){
+        if(cc.value<=1000){
+          document.getElementById("Liability1P").textContent=2094;
+        }
+        else if(cc.value>1000 && cc.value<=1500){
+          document.getElementById("Liability1P").textContent=3416;
+        }
+        else{
+          document.getElementById("Liability1P").textContent=7897;
+        }
+      }else if(eTypeSelect.selectedIndex==1){
+        if(cc.value<=30){
+          document.getElementById("Liability1P").textContent=Math.round(2094*0.85);
+        }
+        else if(cc.value>30 && cc.value<=65){
+          document.getElementById("Liability1P").textContent=Math.round(3416*0.85);
+        }
+        else{
+          document.getElementById("Liability1P").textContent=Math.round(7897*0.85);
+        }
+      }else{
+        if(cc.value<=1000){
+          document.getElementById("Liability1P").textContent=Math.round(2094*0.925);
+        }
+        else if(cc.value>1000 && cc.value<=1500){
+          document.getElementById("Liability1P").textContent=Math.round(3416*0.925);
+        }
+        else{
+          document.getElementById("Liability1P").textContent=Math.round(7897*0.925);
+        }
+      }   
+      
+		}
+	}
 
-    show("Liability1");
-
-    const base = isNewVehicle
-      ? [6521, 10640, 24596]
-      : [2094, 3416, 7897];
-
-    const ccBand =
-      cc.value <= 1000 ? 0 :
-      cc.value <= 1500 ? 1 : 2;
-
-    let factor = 1;
-    if (eTypeSelect.selectedIndex == 1) factor = 0.85;
-    else if (eTypeSelect.selectedIndex == 2) factor = 0.925;
-
-    set("Liability1P", Math.round(base[ccBand] * factor));
-
-    applyCommonTPAddons(isNewVehicle ? 3 : 1);
-    return;
-  }
-
-  /* -------------------- TWO WHEELER -------------------- */
-  if (vtype.value === "2W") {
-
-    show("Liability1");
-
-    const base = isNewVehicle
-      ? [2901, 3851, 7365, 15117]
-      : [538, 714, 1366, 2804];
-
-    const ccBand =
-      cc.value <= 75 ? 0 :
-      cc.value <= 150 ? 1 :
-      cc.value <= 350 ? 2 : 3;
-
-    let factor = (eTypeSelect.selectedIndex == 1) ? 0.85 : 1;
-    set("Liability1P", Math.round(base[ccBand] * factor));
-
-    applyCommonTPAddons(isNewVehicle ? 5 : 1);
-  }
+	/* ------------------------------------------------
+     TWO WHEELER
+  ------------------------------------------------- */
+	else if(vtype.value=="2W"){
+    document.getElementById('Liability1').style.display='flex';
+		if(today1.setHours(0,0,0,0)==reg_date.setHours(0,0,0,0)){
+			if(eTypeSelect.selectedIndex==0 || eTypeSelect.selectedIndex==2){
+        if(cc.value<=75){
+          document.getElementById("Liability1P").textContent=2901;
+        }
+        else if(cc.value>75 && cc.value<=150){
+          document.getElementById("Liability1P").textContent=3851;
+        }
+        else if(cc.value>150 && cc.value<=350){
+          document.getElementById("Liability1P").textContent=7365;
+        }
+        else{
+          document.getElementById("Liability1P").textContent=15117;
+        }
+      }else{
+        if(cc.value<=3){
+          document.getElementById("Liability1P").textContent=Math.round(2901*0.85);
+        }
+        else if(cc.value>3 && cc.value<=7){
+          document.getElementById("Liability1P").textContent=Math.round(3851*0.85);
+        }
+        else if(cc.value>7 && cc.value<=16){
+          document.getElementById("Liability1P").textContent=Math.round(7365*0.85);
+        }
+        else{
+          document.getElementById("Liability1P").textContent=Math.round(15117*0.85);
+        }
+      }
+      if(LPG.checked){
+        document.getElementById("Liability8P").textContent=60*5;
+        document.getElementById('Liability8').style.display='flex';
+      }
+      if(GE.checked){
+        document.getElementById("Liability7P").textContent=100*5;
+        document.getElementById('Liability7').style.display='flex';
+      }
+      if(nopd.value){
+        if(csinopd.selectedIndex=='1'){
+          document.getElementById("Liability5P").textContent=nopd.value*70*5;
+          document.getElementById('Liability5').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability5P").textContent=nopd.value*140*5;
+          document.getElementById('Liability5').style.display='flex';
+        }
+      }
+      if(nopp.value){
+        if(csinopp.selectedIndex=='1'){
+          document.getElementById("Liability6P").textContent=nopp.value*50*5;
+          document.getElementById('Liability6').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability6P").textContent=nopp.value*100*5;
+          document.getElementById('Liability6').style.display='flex';
+        }
+      }  
+		}    
+		else
+    {
+      if(LPG.checked){
+        document.getElementById("Liability8P").textContent=60;
+        document.getElementById('Liability8').style.display='flex';
+      }
+      if(GE.checked){
+        document.getElementById("Liability7P").textContent=100;
+        document.getElementById('Liability7').style.display='flex';
+      }
+      if(nopd.value){
+        if(csinopd.selectedIndex=='1'){
+          document.getElementById("Liability5P").textContent=nopd.value*70;
+          document.getElementById('Liability5').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability5P").textContent=nopd.value*140;
+          document.getElementById('Liability5').style.display='flex';
+        }
+      }
+      if(nopp.value){
+        if(csinopp.selectedIndex=='1'){
+          document.getElementById("Liability6P").textContent=nopp.value*50;
+          document.getElementById('Liability6').style.display='flex';
+        }
+        else{
+          document.getElementById("Liability6P").textContent=nopp.value*100;
+          document.getElementById('Liability6').style.display='flex';
+        }
+      }  
+      if(eTypeSelect.selectedIndex==0||eTypeSelect.selectedIndex==2){
+        if(cc.value<=75){
+          document.getElementById("Liability1P").textContent=538;
+        }
+        else if(cc.value>75 && cc.value<=150){
+          document.getElementById("Liability1P").textContent=714;
+        }
+        else if(cc.value>150 && cc.value<=350){
+          document.getElementById("Liability1P").textContent=1366;
+        }
+        else{
+          document.getElementById("Liability1P").textContent=2804;
+        }
+      }else{
+        if(cc.value<=3){
+          document.getElementById("Liability1P").textContent=Math.round(538*0.85);
+        }
+        else if(cc.value>3 && cc.value<=7){
+          document.getElementById("Liability1P").textContent=Math.round(714*0.85);
+        }
+        else if(cc.value>7 && cc.value<=16){
+          document.getElementById("Liability1P").textContent=Math.round(1366*0.85);
+        }
+        else{
+          document.getElementById("Liability1P").textContent=Math.round(2804*0.85);
+        }
+      } 
+			
+		}
+	}
 }
 
 /* ==================================================
@@ -1840,115 +2461,123 @@ function totalAmount(){
 	/* --------------------------------------------
        STEP 9: ADD-ON PREMIUMS
     -------------------------------------------- */
-  if (ND.checked) {
-  nilDep();
-  if (OD4P.textContent) showOD('OD4');
-}
+    if(ND.checked){
+      nilDep();
+      if(OD4P.textContent!=''){
+        document.getElementById('OD4').style.display='flex';
+      }
+    }
+    if(EP.checked){
+      engineProtect();
+      if(OD5P.textContent!=''){
+        document.getElementById('OD5').style.display='flex';
+      }
+    }
+    if(CM.checked){
+      consumables();
+      if(OD6P.textContent!=''){
+        document.getElementById('OD6').style.display='flex';
+      }
+    }
+    if(RTI.checked){
+      returnToInvoice();
+      if(OD7P.textContent!=''){
+        document.getElementById('OD7').style.display='flex';
+      }
+    }
+    if(LK.checked){
+      if(vtype.value=="2W"){
+        OD8P.textContent=50;
+        document.getElementById('OD8').style.display='flex';
 
-if (EP.checked) {
-  engineProtect();
-  if (OD5P.textContent) showOD('OD5');
-}
-
-if (CM.checked) {
-  consumables();
-  if (OD6P.textContent) showOD('OD6');
-}
-
-if (RTI.checked) {
-  returnToInvoice();
-  if (OD7P.textContent) showOD('OD7');
-}
-
-if (LK.checked) {
-  setOD('OD8P', vtype.value === "2W" ? 50 : 750);
-  showOD('OD8');
-}
-
-if (EMP.value) {
-  showOD('OD9');
-  const rate =
-    (vtype.value === '2W' || vtype.value === '2WSS') ? 0.02 :
-    (vtype.value === 'PCV Taxi' || vtype.value === 'PvtCar' || vtype.value === 'PvtCarS') ? 0.066 :
-    0.03;
-  setOD('OD9P', (Number(EMP.value) * rate).toFixed(2));
-}
-
-if (RSA.checked) {
-  const rsaRates = {
-    '2W': 25,
-    '2WSS': 25,
-    'PvtCar': 50,
-    'PvtCarS': 50,
-    'PCV Taxi': 75,
-    'GCV4': 200
-  };
-  if (rsaRates[vtype.value]) {
-    setOD('OD10P', rsaRates[vtype.value]);
-    showOD('OD10');
-  }
-}
-
-if (tyreV.selectedIndex !== '0') {
-  showOD('OD11');
-  setOD('OD11P', [0, 1000, 2000, 4000, 8000][tyreV.selectedIndex]);
-}
-
-if (NP.checked) {
-  showOD('OD12');
-  const rate = (vtype.value === 'PvtCar' || vtype.value === 'PvtCarS') ? 0.0015 : 0.0024;
-  setOD('OD12P', (Number(newidv.textContent) * rate).toFixed(2));
-}
-
-if (GE.checked) {
-  setOD('OD13P', 400);
-  showOD('OD13');
-}
-
-if (LPG.checked) {
-  setOD(
-    'OD14P',
-    ((Number(OD1P.textContent) + Number(OD2P.textContent)) * 0.05).toFixed(2)
-  );
-  showOD('OD14');
-}
-
-if (OT.checked) {
-  setOD('OD15P', (Number(newidv.textContent) * 0.005).toFixed(2));
-  showOD('OD15');
-}
-
-if (towingAmt.value && towingAmt.value !== '0') {
-  showOD('OD16');
-  setOD(
-    'OD16P',
-    towingAmt.value <= 10000
-      ? towingAmt.value * 0.05
-      : towingAmt.value * 0.075
-  );
-}
-
-/* ---------- NCB (Applied LAST) ---------- */
-if (ncbd.selectedIndex !== '0') {
-  showOD('OD17');
-  const ncbBase =
-    Number(OD1P.textContent) +
-    Number(OD2P.textContent) +
-    Number(OD7P.textContent) +
-    Number(OD3P.textContent) +
-    Number(OD4P.textContent) +
-    Number(OD14P.textContent) +
-    Number(OD15P.textContent) +
-    Number(OD19P.textContent) +
-    Number(OD20P.textContent);
-
-  setOD('OD17P', ((ncbBase * Number(ncbd.value)) / 100 * -1).toFixed(2));
-}
-
-if (EVP.checked && (eTypeSelect.selectedIndex == 1 || eTypeSelect.selectedIndex == 2)) {
-  evProtect();
-  showOD('OD18');
-}
+      }else{
+        OD8P.textContent=750;
+        document.getElementById('OD8').style.display='flex';
+      }
+    }
+    if(EMP.value){
+      //OD9P.textContent=1500;
+      document.getElementById('OD9').style.display='flex';
+      if(vtype.value=='2W' || vtype.value=='2WSS'){
+        OD9P.textContent=(Number(EMP.value)*0.02).toFixed(2);
+      }else if(vtype.value=="PCV Taxi" || vtype.value=='PvtCar'||vtype.value=='PvtCarS'){
+        OD9P.textContent=(Number(EMP.value)*0.066).toFixed(2);
+      }else{
+        OD9P.textContent=(Number(EMP.value)*0.03).toFixed(2);
+      }
+    }
+    if(RSA.checked){
+      if(vtype.value=='2W' || vtype.value=='2WSS'){
+        OD10P.textContent=25;
+        document.getElementById('OD10').style.display='flex';
+      }else if(vtype.value=='PvtCar' || vtype.value=='PvtCarS'){
+        OD10P.textContent=50;
+        document.getElementById('OD10').style.display='flex';
+      }else if(vtype.value=="PCV Taxi"){
+        OD10P.textContent=75;
+        document.getElementById('OD10').style.display='flex';
+      }else if(vtype.value=="GCV4"){
+        OD10P.textContent=200;
+        document.getElementById('OD10').style.display='flex';
+      }
+    }if(tyreV.selectedIndex!='0'){
+      document.getElementById('OD11').style.display='flex';
+      switch(tyreV.selectedIndex){
+        case 1:
+          OD11P.textContent=1000;
+          break;
+        case 2:
+          OD11P.textContent=2000;
+          break;
+        case 3:
+          OD11P.textContent=4000;
+          break;
+        case 4:
+          OD11P.textContent=8000;
+      }
+    }if(NP.checked){
+      document.getElementById('OD12').style.display='flex';
+      if(vtype.value=='PvtCar'||vtype.value=='PvtCarS'){
+        OD12P.textContent=(Number(newidv.textContent)*0.0015).toFixed(2);
+      }else{
+        OD12P.textContent=(Number(newidv.textContent)*0.0024).toFixed(2);
+      }
+    }
+    if(GE.checked){
+      OD13P.textContent=400;
+      document.getElementById('OD13').style.display='flex';
+    }
+    if(LPG.checked){
+      OD14P.textContent=((Number(OD1P.textContent)+Number(OD2P.textContent))*0.05).toFixed(2);
+      document.getElementById('OD14').style.display='flex';
+    }
+    if(OT.checked){
+      OD15P.textContent=(Number(newidv.textContent)*0.005).toFixed(2);
+      document.getElementById('OD15').style.display='flex';
+    }
+    if(towingAmt.value!='' && towingAmt.value!=null && towingAmt.value!='0'){
+      document.getElementById('OD16').style.display='flex';
+      if(towingAmt.value<=10000){
+        OD16P.textContent=towingAmt.value*0.05;
+      }else{
+        OD16P.textContent=towingAmt.value*0.075;
+      }
+    }
+	/* --------------------------------------------
+       STEP 14: NO CLAIM BONUS (NCB)
+    --------------------------------------------
+    Applied LAST on OD portion only
+    -------------------------------------------- */
+	  if(ncbd.selectedIndex!='0'){
+      document.getElementById('OD17').style.display='flex';
+      OD17P.textContent=(((Number(OD1P.textContent)+Number(OD2P.textContent)+Number(OD7P.textContent)+Number(OD3P.textContent)+Number(OD4P.textContent)+Number(OD14P.textContent)+Number(OD15P.textContent)+Number(OD19P.textContent)+Number(OD20P.textContent))*Number(ncbd.value))/100).toFixed(2)*-1;
+    }
+    if(EVP.checked){
+      if(eTypeSelect.selectedIndex==1 || eTypeSelect.selectedIndex==2){
+        evProtect();
+        document.getElementById("OD18").style.display='flex';
+      }
+    }
 
 	/* --------------------------------------------
        STEP 15: TOTAL OD PREMIUM & GST
@@ -2014,136 +2643,248 @@ This function ONLY controls eligibility (UI enable/disable),
 NOT premium calculation.
 ==================================================== */
 
-function checkAddonApplicable() {
-
-  /* -------------------- helpers -------------------- */
-  const enable = (...els) => els.forEach(el => el && (el.disabled = false));
-  const disable = (...els) => els.forEach(el => el && (el.disabled = true));
-
-  /* -------------------- age calculation -------------------- */
-  if (!rdate.valueAsDate || !rsdate.valueAsDate) return;
-
-  const from = new Date(rdate.valueAsDate);
-  const to   = new Date(rsdate.valueAsDate);
-
-  const days = (to - from) / (1000 * 60 * 60 * 24);
-  const age  = days < 1460 ? days / 365 : (days + 1) / 365.25;
-
-  /* -------------------- GCV (4W) -------------------- */
-  if (vtype.value === 'GCV4') {
-
-    enable(EMP, RSA, towingAmt, TrOD);
-
-    if (age < 2.5) {
-      enable(ND, CM, RTI);
-    } else if (age <= 4.5) {
-      enable(ND, CM);
-    }
-
-    return;
+function checkAddonApplicable(){
+	  // Calculate vehicle age
+  const jrsdate=new Date(rsdate.valueAsDate);
+  const jrdate=new Date(rdate.valueAsDate);
+  console.log("insdie check add on");
+   
+  const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
+  var age=0;
+  //console.log(days);
+  if(days<1460){
+    age=days/365;
+    //console.log(age);
   }
-
-  /* -------------------- 3W GOODS / PASSENGER -------------------- */
-  if (vtype.value === '3GCV' || vtype.value === '3PCV') {
-
-    enable(EMP, RSA);
-
-    if (age < 2.5) {
-      enable(ND, CM, RTI);
-      disable(towingAmt, TrOD);
-    } else if (age <= 4.5) {
-      enable(ND, CM);
-      disable(towingAmt, TrOD);
-    } else {
-      enable(towingAmt);
-      disable(TrOD);
-    }
-
-    return;
+  else{
+    age=(days+1)/365.25;
+    console.log(age);
   }
-
-  /* -------------------- PRIVATE CAR -------------------- */
-  if (vtype.value === 'PvtCar' || vtype.value === 'PvtCarS') {
-
-    enable(RSA, NP);
-
-    if (age < 2.5) {
-      enable(ND, CM, LK, EP, tyreV, RTI);
-    } else if (age < 4.5) {
-      enable(ND, CM, LK, EP, tyreV);
-    } else if (age <= 6.5) {
-      enable(ND);
-    } else {
-      enable(EMP);
+	  // Proceed only if both dates are entered
+  if(rdate.valueAsDate && rsdate.valueAsDate){
+  /* ------------------------------------------------
+     GOODS CARRYING VEHICLE – 4 WHEELER
+  ------------------------------------------------- */
+    if(vtype.value=='GCV4'){
+      console.log(days);
+      if(age>=2.5&&age<=4.5){
+        ND.disabled=false;
+        CM.disabled=false;
+        EMP.disabled=false;
+        RSA.disabled=false;
+        towingAmt.disabled=false;
+        TrOD.disabled=false;
+      }
+      else if(age>4.5){
+        towingAmt.disabled=false;
+        EMP.disabled=false;
+        RSA.disabled=false;
+        TrOD.disabled=false;
+      }else{
+        ND.disabled=false;
+        CM.disabled=false;
+        EMP.disabled=false;
+        RSA.disabled=false;
+        towingAmt.disabled=false;
+        RTI.disabled=false;
+        TrOD.disabled=false;
+      }
     }
 
-    // EV Protect only for EV / Hybrid
-    disable(EVP);
-    if (eTypeSelect.selectedIndex == 1 || eTypeSelect.selectedIndex == 2) {
-      enable(EVP);
+/* ------------------------------------------------
+     3-WHEELER GOODS / PASSENGER
+  ------------------------------------------------- */
+    else if(vtype.value=='3GCV'|| vtype.value=='3PCV'){
+      if(age>=2.5&&age<=4.5){
+        ND.disabled=false;
+        CM.disabled=false;
+        EMP.disabled=false;
+        RSA.disabled=false;
+        towingAmt.disabled=true;
+        TrOD.disabled=true;
+      }
+      else if(age>4.5){
+        towingAmt.disabled=false;
+        EMP.disabled=false;
+        RSA.disabled=false;
+        TrOD.disabled=true;
+      }else{
+        ND.disabled=false;
+        CM.disabled=false;
+        EMP.disabled=false;
+        RSA.disabled=false;
+        towingAmt.disabled=true;
+        RTI.disabled=false;
+        TrOD.disabled=true;
+      }
+    }
+	/* ------------------------------------------------
+     PRIVATE CAR
+  ------------------------------------------------- */
+    else if(vtype.value=="PvtCar" || vtype.value=="PvtCarS"){
+      console.log(age);
+      console.log(typeof age);
+      console.log("inside privte car");
+      if(age>=2.5 && age< 4.5){
+        ND.disabled=false;
+        RSA.disabled=false;
+        NP.disabled=false;
+        CM.disabled=false;
+        LK.disabled=false;
+        EP.disabled=false;
+        tyreV.disabled=false;
+        EVP.disabled=true;
+        if(eTypeSelect.selectedIndex==1 || eTypeSelect.selectedIndex==2){
+          EVP.disabled=false;
+        }
+        
+      }
+      else if(age>=4.5 && age<=6.5){
+        ND.disabled=false;
+        RSA.disabled=false;
+        NP.disabled=false;
+      }
+      else if(age <2.5){
+        console.log("Age Is Less Than 3");
+        ND.disabled=false;
+        RSA.disabled=false;
+        NP.disabled=false;
+        CM.disabled=false;
+        LK.disabled=false;
+        EP.disabled=false;
+        tyreV.disabled=false;
+        RTI.disabled=false;
+        EVP.disabled=true;
+        if(eTypeSelect.selectedIndex==1 || eTypeSelect.selectedIndex==2){
+          EVP.disabled=false;
+        }
+      }
+      else{
+        RSA.disabled=false;
+        NP.disabled=false;
+        EMP.disabled=false;
+      }
+    }
+	 /* ------------------------------------------------
+     TAXI
+  ------------------------------------------------- */
+	else if(vtype.value=="PCV Taxi"){
+      if(age>=2.5&&age<=4.5){
+        ND.disabled=false;
+        CM.disabled=false;
+        //EMP.disabled=false;
+        RSA.disabled=false;
+        //towingAmt.disabled=false;
+        LK.disabled=false;
+        NP.disabled=false;
+        EMP.disabled=false;
+      }
+      else if(age>4.5){
+        RSA.disabled=false;
+        NP.disabled=false;
+        EMP.disabled=false;
+      }else{
+        ND.disabled=false;
+        CM.disabled=false;
+        EP.disabled=false;
+        RSA.disabled=false;
+        RTI.disabled=false;
+        LK.disabled=false;
+        NP.disabled=false;
+        EMP.disabled=false;
+      }
+    }
+	/* ------------------------------------------------
+     TWO WHEELER
+  ------------------------------------------------- */
+	else if(vtype.value=="2W" || vtype.value=="2WSS"){
+      if(age>=2.5 && age<4.5){
+        ND.disabled=false;
+        RSA.disabled=false;
+       	CM.disabled=false;
+        LK.disabled=false;
+        EP.disabled=false;
+        EMP.disabled=false;
+        
+        
+      }
+      else if(age>=4.5 && age<=6.5){
+        ND.disabled=false;
+        RSA.disabled=false;
+        
+        EMP.disabled=false;
+      }
+      else if(age <2.5){
+        ND.disabled=false;
+        RSA.disabled=false;
+        
+        CM.disabled=false;
+        LK.disabled=false;
+        EP.disabled=false;
+        tyreV.disabled=false;
+        RTI.disabled=false;
+        EMP.disabled=false;
+        
+      }
+      else{
+        RSA.disabled=false;
+        //NP.disabled=false;
+        EMP.disabled=false;
+      }
+
+    }
+	  /* ------------------------------------------------
+     BUS / SCHOOL BUS
+  ------------------------------------------------- */
+	else if(vtype.value=="PCV Bus" || vtype.value=="PCV School Bus"){
+      RSA.disabled=false;
+      EMP.disabled=false;
+      towingAmt.disabled=false;
+      console.log(nps.value);
+      if(nps.value){
+        if(nps.value<=17 && age<2.5){
+          ND.disabled=false;
+          CM.disabled=false;
+          RTI.disabled=false;
+          EP.disabled=false;
+          LK.disabled=false;
+        }else if(nps.value>17 && age<2.5){
+          ND.disabled=false;
+          CM.disabled=false;
+          RTI.disabled=false;
+          //EP.disabled=false;
+        }else if(nps.value>17 && age <=4.5 && age>=2.5){
+          ND.disabled=false;
+          //EP.disabled=false;
+          CM.disabled=false;
+        }else if(nps.value<=17 && age>=2.5 && age<=4.5){
+          ND.disabled=false;
+          CM.disabled=false;
+          //RTI.disabled=false;
+          EP.disabled=false;
+          LK.disabled=false;
+        }
+      }
+      
+
+    }
+/* ------------------------------------------------
+     MISCELLANEOUS VEHICLES
+  ------------------------------------------------- */
+	else if(vtype.value=="MISC"){
+      EMP.disabled=false;
+      TrOD.disabled=false;
+      console.log("misc add on check");
+      if(age<4.5)
+      {
+        ND.disabled=false;
+        CM.disabled=false;
+      }
+
     }
 
-    return;
   }
-
-  /* -------------------- TAXI -------------------- */
-  if (vtype.value === 'PCV Taxi') {
-
-    enable(RSA, NP, EMP);
-
-    if (age < 2.5) {
-      enable(ND, CM, EP, RTI, LK);
-    } else if (age <= 4.5) {
-      enable(ND, CM, LK);
-    }
-
-    return;
-  }
-
-  /* -------------------- TWO WHEELER -------------------- */
-  if (vtype.value === '2W' || vtype.value === '2WSS') {
-
-    enable(RSA, EMP);
-
-    if (age < 2.5) {
-      enable(ND, CM, LK, EP, tyreV, RTI);
-    } else if (age < 4.5) {
-      enable(ND, CM, LK, EP);
-    } else if (age <= 6.5) {
-      enable(ND);
-    }
-
-    return;
-  }
-
-  /* -------------------- BUS / SCHOOL BUS -------------------- */
-  if (vtype.value === 'PCV Bus' || vtype.value === 'PCV School Bus') {
-
-    enable(RSA, EMP, towingAmt);
-
-    if (!nps.value) return;
-
-    if (age < 2.5) {
-      enable(ND, CM, RTI);
-      if (nps.value <= 17) enable(EP, LK);
-    }
-    else if (age <= 4.5) {
-      enable(ND, CM);
-      if (nps.value <= 17) enable(EP, LK);
-    }
-
-    return;
-  }
-
-  /* -------------------- MISC -------------------- */
-  if (vtype.value === 'MISC') {
-
-    enable(EMP, TrOD);
-
-    if (age < 4.5) {
-      enable(ND, CM);
-    }
-
+  else{
     return;
   }
 }
