@@ -198,12 +198,7 @@ function gcvODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-  if(days<1460){
-    age=days/365;
-  }
-  else{
-    age=(days+1)/365.25;
-  }
+	age = days < 1460 ? days / 365 : (days + 1) / 365.25;
   console.log(age);
 
 // Apply zone-wise OD rate based on vehicle age
@@ -3327,6 +3322,7 @@ function evProtect(){
     }
   }
 }
+
 
 
 
