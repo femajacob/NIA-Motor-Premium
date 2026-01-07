@@ -198,46 +198,21 @@ function gcvODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-	age = days < 1460 ? days / 365 : (days + 1) / 365.25;
+	age = days < 1460 ? days / 365 : (days + 1) / 365.25; //Change 1 - Age Calculation Formula Updated
   console.log(age);
 
 // Apply zone-wise OD rate based on vehicle age
-  switch(zone.value){
-		  //ZONE B
-    case 'zoneb':
-      if(age<5){
-        rate.textContent=1.743;
-      }else if(age>=5&&age<7){
-        rate.textContent=1.787;
-      }else{
-        rate.textContent=1.830;
-      }
-      break;
-		  //ZONE C
-      case 'zonec':
-      if(age<5){
-        rate.textContent=1.726;
-      }else if(age>=5&&age<7){
-        rate.textContent=1.770;
-      }else{
-        rate.textContent=1.812;
-      }
-      break;
-		  //ZONE A
-      case 'zonea':
-      if(age<5){
-        rate.textContent=1.751;
-      }else if(age>=5&&age<7){
-        rate.textContent=1.795;
-      }else{
-        rate.textContent=1.839;
-      }
-      break;
+ const ageBand =
+  age < 5 ? 0 :
+  age < 7 ? 1 : 2;
 
-}
+const gcvRates = {
+  zoneb: [1.743, 1.787, 1.830],
+  zonec: [1.726, 1.770, 1.812],
+  zonea: [1.751, 1.795, 1.839]
+};
 
-}
-
+rate.textContent = gcvRates[zone.value][ageBand];
 /* --------------------------------------------------
    FUNCTION: pvtCarODRate
 -----------------------------------------------------
@@ -261,139 +236,52 @@ function pvtCarODRate(){
   console.log(jrsdate);
   const days=(jrsdate.getTime()-jrdate.getTime())/1000/60/60/24;
   var age;
-  if(days<1460){
-    age=days/365;
-  }
-  else{
-    age=(days+1)/365.25;
-  }
+ 	age = days < 1460 ? days / 365 : (days + 1) / 365.25; 
   console.log(age);
 /* -----------------------------------------------
      ELECTRIC / HYBRID VEHICLE OD RATES
-  ----------------------------------------------- */
-  if(eTypeSelect.selectedIndex=='1'){
-	  // Apply zone-wise OD rate based on vehicle age
-    switch (zone.value){
-		//ZONE B
-      case 'zoneb':
-        if(age<5){
-          rate.textContent=3.191;
-        }else if(age>=5 && age<10){
-          rate.textContent=3.351;
-        }else{
-          rate.textContent=3.430;
-        }
-        break;
-
-		//ZONE C
-      case 'zonec':
-        if(age<5){
-          rate.textContent=3.191;
-        }else if(age>=5 && age<10){
-          rate.textContent=3.351;
-        }else{
-          rate.textContent=3.430;
-        }
-        break;
-
-			//ZONE A
-      case 'zonea':
-        if(age<5){
-          rate.textContent=3.283;
-        }else if(age>=5 && age<10){
-          rate.textContent=3.447;
-        }else{
-          rate.textContent=3.529;
-        }
-        break;  
-
-    }
-    return;
-  }
-
+  ----------------------------------------------- */  
 /* -----------------------------------------------
      INTERNAL COMBUSTION ENGINE (ICE) VEHICLES
   ----------------------------------------------- */
-  switch(zone.value){
-		  //ZONE B
-    case 'zoneb':
-      if(age<5){
-        if(cc.value<=1000)
-         rate.textContent=3.039;
-        else if(cc.value>1000 && cc.value<=1500)
-          rate.textContent=3.191;
-        else
-          rate.textContent=3.343; 
-      }else if(age>=5&&age<10){
-        if(cc.value<=1000)
-          rate.textContent=3.191;
-         else if(cc.value>1000 && cc.value<=1500)
-           rate.textContent=3.351;
-         else
-           rate.textContent=3.510; 
-      }else{
-        if(cc.value<=1000)
-          rate.textContent=3.267;
-         else if(cc.value>1000 && cc.value<=1500)
-           rate.textContent=3.430;
-         else
-           rate.textContent=3.594; 
-      }
-      break;
-		//ZONE C
-      case 'zonec':
-        if(age<5){
-          if(cc.value<=1000)
-           rate.textContent=3.039;
-          else if(cc.value>1000 && cc.value<=1500)
-            rate.textContent=3.191;
-          else
-            rate.textContent=3.343; 
-        }else if(age>=5&&age<10){
-          if(cc.value<=1000)
-            rate.textContent=3.191;
-           else if(cc.value>1000 && cc.value<=1500)
-             rate.textContent=3.351;
-           else
-             rate.textContent=3.510; 
-        }else{
-          if(cc.value<=1000)
-            rate.textContent=3.267;
-           else if(cc.value>1000 && cc.value<=1500)
-             rate.textContent=3.430;
-           else
-             rate.textContent=3.594; 
-        }
-      break;
-		  //ZONE A
-      case 'zonea':
-        if(age<5){
-          if(cc.value<=1000)
-           rate.textContent=3.127;
-          else if(cc.value>1000 && cc.value<=1500)
-            rate.textContent=3.283;
-          else
-            rate.textContent=3.440; 
-        }else if(age>=5&&age<10){
-          if(cc.value<=1000)
-            rate.textContent=3.283;
-           else if(cc.value>1000 && cc.value<=1500)
-             rate.textContent=3.447;
-           else
-             rate.textContent=3.612; 
-        }else{
-          if(cc.value<=1000)
-            rate.textContent=3.362;
-           else if(cc.value>1000 && cc.value<=1500)
-             rate.textContent=3.529;
-           else
-             rate.textContent=3.698; 
-        }
-      break;
+const ageBand =
+  age < 5 ? 0 :
+  age < 10 ? 1 : 2;
 
+const ccBand =
+  cc.value <= 1000 ? 0 :
+  cc.value <= 1500 ? 1 : 2;
+
+const evRates = {
+  zoneb: [3.191, 3.351, 3.430],
+  zonec: [3.191, 3.351, 3.430],
+  zonea: [3.283, 3.447, 3.529]
+};
+
+const iceRates = {
+  zoneb: [
+    [3.039, 3.191, 3.343],
+    [3.191, 3.351, 3.510],
+    [3.267, 3.430, 3.594]
+  ],
+  zonec: [
+    [3.039, 3.191, 3.343],
+    [3.191, 3.351, 3.510],
+    [3.267, 3.430, 3.594]
+  ],
+  zonea: [
+    [3.127, 3.283, 3.440],
+    [3.283, 3.447, 3.612],
+    [3.362, 3.529, 3.698]
+  ]
+};
+
+if (eTypeSelect.selectedIndex == '1') {
+  rate.textContent = evRates[zone.value][ageBand];
+} else {
+  rate.textContent = iceRates[zone.value][ageBand][ccBand];
 }
 	
-}
 
 /* --------------------------------------------------
    FUNCTION: twoWheelerODRate
@@ -3322,6 +3210,7 @@ function evProtect(){
     }
   }
 }
+
 
 
 
