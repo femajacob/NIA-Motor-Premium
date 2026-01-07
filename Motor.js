@@ -1,3 +1,85 @@
+/*
+====================================================
+MOTOR INSURANCE PREMIUM CALCULATOR – CORE LOGIC FILE
+----------------------------------------------------
+This file contains the complete business logic for
+calculating Motor Insurance premiums including:
+
+• Own Damage (OD) premium
+• Third Party (TP) premium
+• Add-on eligibility & pricing
+• Vehicle-wise underwriting rules
+• GST and final payable premium
+
+IMPORTANT NOTES:
+• OD rates are company-specific
+• TP rates are IRDAI notified
+• Add-on rules depend on underwriting guidelines
+• UI (HTML) is tightly coupled with logic in this file
+
+Any change in tariff or underwriting rules should be
+reflected carefully in this file.
+====================================================
+*/
+
+
+/* ==================================================
+   UI ELEMENT BINDINGS (DOM REFERENCES)
+====================================================
+Each constant maps to an HTML input or output field.
+All calculations directly read from / write to these
+DOM elements.
+==================================================== */
+
+
+// IDV related fields
+const oldidv=document.getElementById("oldidv"); 	// Previous year IDV
+const dep=document.getElementById("dep");			// Depreciation percentage
+const newidv=document.getElementById("newidv");		// Calculated current IDV
+
+// Date fields
+const rdate=document.getElementById("rdate");		// Registration date
+const rsdate=document.getElementById("rsdate");		// Risk start date
+
+// Vehicle classification inputs
+const zone=document.getElementById("zone");			// Zone A / B / C
+const vtype=document.getElementById("vtype");		// Vehicle type
+const gvw=document.getElementById("gvw");			// Gross Vehicle Weight
+const cc=document.getElementById("cc");				// Cubic Capacity
+const nps=document.getElementById("nps");			// Number of passengers
+
+// Liability & OD related inputs
+const lld=document.getElementById("lld");			// Legal liability to driver
+const rate=document.getElementById("rate");			// OD rate (%)
+
+// Add-on checkboxes
+const ND=document.getElementById("ND");				// Nil Depreciation
+const EP=document.getElementById("EP");				// Engine Protect
+const CM=document.getElementById("CM");				// Consumables
+const RTI=document.getElementById("RTI");			// Return to Invoice
+const LK=document.getElementById("LK");				// Key Loss
+const EMP=document.getElementById("EMP");			// Electrical accessories
+const RSA=document.getElementById("RSA");			// Road Side Assistance
+const LPG=document.getElementById("LPG");			// LPG/CNG Kit
+const GE=document.getElementById("GE");				// Geographical Extension
+const tyreV=document.getElementById("tyreV");		// Tyre protection
+const towingAmt=document.getElementById("towingAmt");	// Towing add-on
+const OT=document.getElementById("OT");				// Own trailer
+const NP=document.getElementById("NP");				// NCB Protection
+const imt23=document.getElementById("imt23");		// IMT 23 endorsement
+
+// OD Discount %
+const odd=document.getElementById("odd");			// OD discount (%)
+
+// Personal Accident & Liability related inputs
+const paodch=document.getElementById("paodch");		// PA Owner Driver checkbox
+const paodt=document.getElementById("paodt");		// PA tenure
+const ncbd=document.getElementById('ncbd');			// No Claim Bonus %
+const nopd=document.getElementById("nopd");			// No. of paid drivers
+const csinopd=document.getElementById('csinopd');	// CSI for paid driver
+const nopp=document.getElementById("nopp");			// No. of passengers
+const csinopp=document.getElementById('csinopp');	// CSI for passengers
+const ELA=document.getElementById("ELA");			// Electrical accessories SI
 //console.log("hello");
 
 
@@ -2613,3 +2695,4 @@ function evProtect(){
     }
   }
 }
+
