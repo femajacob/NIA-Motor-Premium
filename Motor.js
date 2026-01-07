@@ -2662,8 +2662,24 @@ function totalAmount(){
   }
 }
 
+/* ==================================================
+   FUNCTION: checkAddonApplicable
+====================================================
+PURPOSE:
+Determines which add-ons are ENABLED or DISABLED
+based on:
+• Vehicle age
+• Vehicle type
+• Passenger capacity (where applicable)
+• EV / Non-EV status
+
+IMPORTANT:
+This function ONLY controls eligibility (UI enable/disable),
+NOT premium calculation.
+==================================================== */
 
 function checkAddonApplicable(){
+	  // Calculate vehicle age
   const jrsdate=new Date(rsdate.valueAsDate);
   const jrdate=new Date(rdate.valueAsDate);
   console.log("insdie check add on");
@@ -2679,8 +2695,11 @@ function checkAddonApplicable(){
     age=(days+1)/365.25;
     console.log(age);
   }
+	  // Proceed only if both dates are entered
   if(rdate.valueAsDate && rsdate.valueAsDate){
-    
+  /* ------------------------------------------------
+     GOODS CARRYING VEHICLE – 4 WHEELER
+  ------------------------------------------------- */
     if(vtype.value=='GCV4'){
       console.log(days);
       if(age>=2.5&&age<=4.5){
@@ -2706,6 +2725,10 @@ function checkAddonApplicable(){
         TrOD.disabled=false;
       }
     }
+
+/* ------------------------------------------------
+     3-WHEELER GOODS / PASSENGER
+  ------------------------------------------------- */
     else if(vtype.value=='3GCV'|| vtype.value=='3PCV'){
       if(age>=2.5&&age<=4.5){
         ND.disabled=false;
@@ -2730,6 +2753,9 @@ function checkAddonApplicable(){
         TrOD.disabled=true;
       }
     }
+	/* ------------------------------------------------
+     PRIVATE CAR
+  ------------------------------------------------- */
     else if(vtype.value=="PvtCar" || vtype.value=="PvtCarS"){
       console.log(age);
       console.log(typeof age);
@@ -2773,7 +2799,11 @@ function checkAddonApplicable(){
         NP.disabled=false;
         EMP.disabled=false;
       }
-    }else if(vtype.value=="PCV Taxi"){
+    }
+	 /* ------------------------------------------------
+     TAXI
+  ------------------------------------------------- */
+	else if(vtype.value=="PCV Taxi"){
       if(age>=2.5&&age<=4.5){
         ND.disabled=false;
         CM.disabled=false;
@@ -2785,8 +2815,6 @@ function checkAddonApplicable(){
         EMP.disabled=false;
       }
       else if(age>4.5){
-        //towingAmt.disabled=false;
-        //EMP.disabled=false;
         RSA.disabled=false;
         NP.disabled=false;
         EMP.disabled=false;
@@ -2794,36 +2822,37 @@ function checkAddonApplicable(){
         ND.disabled=false;
         CM.disabled=false;
         EP.disabled=false;
-        //EMP.disabled=false;
         RSA.disabled=false;
-        //towingAmt.disabled=false;
         RTI.disabled=false;
         LK.disabled=false;
         NP.disabled=false;
         EMP.disabled=false;
       }
-    }else if(vtype.value=="2W" || vtype.value=="2WSS"){
+    }
+	/* ------------------------------------------------
+     TWO WHEELER
+  ------------------------------------------------- */
+	else if(vtype.value=="2W" || vtype.value=="2WSS"){
       if(age>=2.5 && age<4.5){
         ND.disabled=false;
         RSA.disabled=false;
-        //NP.disabled=false;
-        CM.disabled=false;
+       	CM.disabled=false;
         LK.disabled=false;
         EP.disabled=false;
         EMP.disabled=false;
         
-        //tyreV.disabled=false;
+        
       }
       else if(age>=4.5 && age<=6.5){
         ND.disabled=false;
         RSA.disabled=false;
-        //NP.disabled=false;
+        
         EMP.disabled=false;
       }
       else if(age <2.5){
         ND.disabled=false;
         RSA.disabled=false;
-        //NP.disabled=false;
+        
         CM.disabled=false;
         LK.disabled=false;
         EP.disabled=false;
@@ -2838,7 +2867,11 @@ function checkAddonApplicable(){
         EMP.disabled=false;
       }
 
-    }else if(vtype.value=="PCV Bus" || vtype.value=="PCV School Bus"){
+    }
+	  /* ------------------------------------------------
+     BUS / SCHOOL BUS
+  ------------------------------------------------- */
+	else if(vtype.value=="PCV Bus" || vtype.value=="PCV School Bus"){
       RSA.disabled=false;
       EMP.disabled=false;
       towingAmt.disabled=false;
@@ -2869,7 +2902,11 @@ function checkAddonApplicable(){
       }
       
 
-    }else if(vtype.value=="MISC"){
+    }
+/* ------------------------------------------------
+     MISCELLANEOUS VEHICLES
+  ------------------------------------------------- */
+	else if(vtype.value=="MISC"){
       EMP.disabled=false;
       TrOD.disabled=false;
       console.log("misc add on check");
@@ -2886,6 +2923,15 @@ function checkAddonApplicable(){
     return;
   }
 }
+
+/* ==================================================
+   FUNCTION: resetAddon
+====================================================
+PURPOSE:
+• Clears all selected add-ons
+• Disables all add-on inputs
+• Prevents carry-forward errors
+==================================================== */
 function resetAddon(){
   console.log("inside reset add on");
   ND.checked=false;
@@ -2896,8 +2942,7 @@ function resetAddon(){
   EMP.value=null;
   RSA.checked=false;
   GE.checked=false;
-  //tyreV.checked=false;
-  //towingAmt.checked=false;
+ 
   NP.checked=false;
   OT.checked=false;
   ND.disabled=true;
@@ -2914,9 +2959,20 @@ function resetAddon(){
   EVP.checked=false;
   TrOD.value=null;
   TrOD.disabled=true;
-  //towingAmt.disabled=true;
+  
 
 }
+
+/* --------------------------------------------------
+   FUNCTION: nilDep
+-----------------------------------------------------
+Calculates Nil Depreciation add-on premium.
+
+Base:
+• Base OD + Electrical Accessories loading
+Rate:
+• Increases with vehicle age
+-------------------------------------------------- */
 function nilDep(){
   console.log('insdie gcv');
   const jrsdate=new Date(rsdate.valueAsDate);
@@ -2931,6 +2987,7 @@ function nilDep(){
   else{
     age=(days+1)/365.25;
   }
+	  // Commercial & misc vehicles
   if(vtype.value=="GCV4" || vtype.value=="MISC"||vtype.value=="PCV Taxi" || vtype.value=="PCV Bus"|| vtype.value=="PCV School Bus" || vtype.value=="3GCV" || vtype.value=="3PCV"){
     if(age<=0.5){
       document.getElementById("OD4P").textContent=(Number(Number(document.getElementById("OD1P").textContent)+(ELA.value*0.04))*0.10).toFixed(2);
@@ -2944,7 +3001,9 @@ function nilDep(){
       document.getElementById("OD4P").textContent=(Number(Number(document.getElementById("OD1P").textContent)+(ELA.value*0.04))*0.40).toFixed(2);
     }
 
-  }else if(vtype.value=="PvtCar" || vtype.value=="PvtCarS" || vtype.value=="2W"|| vtype.value=="2WSS"){
+  }
+	    // Private Car & two-wheelers
+  else if(vtype.value=="PvtCar" || vtype.value=="PvtCarS" || vtype.value=="2W"|| vtype.value=="2WSS"){
     console.log("pvt add on");
     if(age<=0.5){
       document.getElementById("OD4P").textContent=(Number(Number(document.getElementById("OD1P").textContent)+(ELA.value*0.04))*0.10).toFixed(2); 
@@ -3112,6 +3171,14 @@ function returnToInvoice(){
   }
     
 }
+/* ==================================================
+   FUNCTION: resetPremiumAmount
+====================================================
+PURPOSE:
+• Clears all OD & TP components
+• Hides premium rows
+• Prevents stale premium display
+==================================================== */
 function resetPremiumAmount(){
 document.getElementById("OD3").style.display='none';
 document.getElementById("OD4").style.display='none';
@@ -3186,6 +3253,12 @@ function saveAsImage() {
       link.remove()
   })
 }
+
+/* --------------------------------------------------
+   EXPORT QUOTATION AS IMAGE
+--------------------------------------------------
+Used for agent sharing (WhatsApp / print)
+-------------------------------------------------- */
 function htmlAsImage(){
 htmlToImage.toJpeg(document.getElementById('container'), { quality: 0.95,style:{background:"white"} })
   .then(function (dataUrl) {
@@ -3196,6 +3269,15 @@ htmlToImage.toJpeg(document.getElementById('container'), { quality: 0.95,style:{
     
   });
 }
+
+/* --------------------------------------------------
+   FUNCTION: evProtect
+-----------------------------------------------------
+Calculates EV Battery Protection premium
+based on:
+• EV / Hybrid type
+• Vehicle age
+-------------------------------------------------- */
 function evProtect(){
   console.log('insdie gcv');
   const jrsdate=new Date(rsdate.valueAsDate);
@@ -3245,6 +3327,7 @@ function evProtect(){
     }
   }
 }
+
 
 
 
