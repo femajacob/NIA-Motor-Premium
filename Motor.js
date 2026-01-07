@@ -1638,6 +1638,9 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         else{
           //window.alert("Please Enter No. Of Passengers");
         }
+/* ------------------------------------------------
+     TWO WHEELER STANDALONE
+  ------------------------------------------------- */
       }else if(vehicleType=="2WSS"){
         nopp.value==null;
         csinopp.selectedIndex='0';
@@ -1674,6 +1677,10 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
         else{
           //window.alert("Please Enter Cubic Capacity");
         }
+
+/* ------------------------------------------------
+     PRIVATE CAR STANDALONE
+  ------------------------------------------------- */
       }else if(vehicleType=="PvtCarS"){
         nopp.value==null;
         csinopp.selectedIndex='0';
@@ -1714,44 +1721,90 @@ function basicODRate(r_date,rs_date,zonetype,vehicleType,grossVW,cubicCap,nops){
     return;
   }  
 }
+
+/* ==================================================
+   BASE OWN DAMAGE (OD) PREMIUM CALCULATION
+====================================================
+This function converts:
+• OD Rate (%)
+• IDV
+• Vehicle-specific loadings
+
+into the BASE OD PREMIUM amount.
+
+This is the FIRST monetary computation in the system.
+==================================================== */
+
+/* --------------------------------------------------
+   FUNCTION: basicODPremium
+-----------------------------------------------------
+Purpose:
+• Validate mandatory inputs
+• Apply vehicle-specific loadings
+• Calculate base OD premium
+
+Returns:
+• true  → calculation successful
+• false → mandatory data missing
+-------------------------------------------------- */
+
 function basicODPremium(){
+	 /* ----------------------------------------------
+     PRIVATE CAR / TWO WHEELER
+  ---------------------------------------------- */
   if(vtype.value=="PvtCar" ||vtype.value=="PvtCarS" ||vtype.value=="2W"||vtype.value=="2wss"){
 		if(cc.value==null){
+			// Cubic Capacity is mandatory
 			window.alert("Cubic Capacity is a Manadatory Input For Calculation of Premium");
 			return false;
 		}
+			 // Base OD = Rate % × IDV
 		else{
 			document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
 			return true;
 		}
+/* ----------------------------------------------
+     GOODS CARRYING VEHICLE (4W)
+  ---------------------------------------------- */
 	}else if(vtype.value=="GCV4"){
+	  // GVW mandatory
 		if(gvw.value==null){
 			window.alert("Gross Vehicle Weight is a Manadatory Input For Calculation of Premium");
 			return false;
 		}
 		else{
+			// Up to 12,000 kg → simple rate
 			if(gvw.value<=12000){
 				document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
 				return true;
 			}
 			else{
+				 // Above 12,000 kg → per kg loading
 				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+(gvw.value-12000)*0.27).toFixed(2);
 				return true;
 			}
 		}
+/* ----------------------------------------------
+     TAXI
+  ---------------------------------------------- */
 	}else if(vtype.value=="PCV Taxi"){
 		if(cc.value==null || nps.value==null || nps.value>6){
+			// CC and passenger count mandatory
 			window.alert("Cubic Capacity and No Of passengers(Less Than 7) are required Field For Taxi");
 			return false;
 		}else{
 			document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
 			return true;
 		}
+/* ----------------------------------------------
+     BUS / SCHOOL BUS
+  ---------------------------------------------- */
 	}else if(vtype.value=="PCV Bus" || vtype.value=="PCV School Bus"){
 		if(nps.value==null || nps.value<=6){
 			window.alert("Number of Passengers Must Be Greater Than 6");
 			return false;
 		}
+			// Passenger-based fixed loading
 		else{
 			if(nps.value>=7 && nps.value<=18){
 				document.getElementById("OD1P").textContent=(((Number(rate.textContent)*Number(newidv.textContent))/100)+350).toFixed(2);
@@ -1771,11 +1824,35 @@ function basicODPremium(){
 			}
 		}
 	}else{
+/* ----------------------------------------------
+     DEFAULT (Misc, 3W, Others)
+  ---------------------------------------------- */
 		document.getElementById("OD1P").textContent=((Number(rate.textContent)*Number(newidv.textContent))/100).toFixed(2);
 		return true;
 	}
 }
 
+/* ==================================================
+   THIRD PARTY (TP) PREMIUM CALCULATION
+====================================================
+This function calculates:
+• Basic TP premium
+• Passenger TP liability
+• Employee / Driver TP
+• LPG / CNG / GE TP additions
+
+TP premiums are based on IRDAI tariff and
+DO NOT depend on IDV or OD rate.
+==================================================== */
+
+/* --------------------------------------------------
+   FUNCTION: basicTP
+-----------------------------------------------------
+Purpose:
+• Apply IRDAI-notified TP premiums
+• Apply passenger / employee liabilities
+• Handle multi-year TP for new vehicles
+-------------------------------------------------- */
 function basicTP(){
   const today1=new Date();
 	const reg_date=new Date(rdate.valueAsDate)
@@ -3037,5 +3114,6 @@ function evProtect(){
     }
   }
 }
+
 
 
