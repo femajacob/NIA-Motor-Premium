@@ -1,41 +1,92 @@
-//console.log("hello");
+/*
+====================================================
+MOTOR INSURANCE PREMIUM CALCULATOR – CORE LOGIC FILE
+----------------------------------------------------
+This file contains the complete business logic for
+calculating Motor Insurance premiums including:
+
+• Own Damage (OD) premium
+• Third Party (TP) premium
+• Add-on eligibility & pricing
+• Vehicle-wise underwriting rules
+• GST and final payable premium
+
+IMPORTANT NOTES:
+• OD rates are company-specific
+• TP rates are IRDAI notified
+• Add-on rules depend on underwriting guidelines
+• UI (HTML) is tightly coupled with logic in this file
+
+Any change in tariff or underwriting rules should be
+reflected carefully in this file.
+====================================================
+*/
 
 
-const oldidv=document.getElementById("oldidv");
-const dep=document.getElementById("dep");
-const newidv=document.getElementById("newidv");
-const rdate=document.getElementById("rdate");
-const rsdate=document.getElementById("rsdate");
-const zone=document.getElementById("zone");
-const vtype=document.getElementById("vtype");
-const gvw=document.getElementById("gvw");
-const cc=document.getElementById("cc");
-const nps=document.getElementById("nps");
-const lld=document.getElementById("lld");
-const rate=document.getElementById("rate");
-const ND=document.getElementById("ND");
-const EP=document.getElementById("EP");
-const CM=document.getElementById("CM");
-const RTI=document.getElementById("RTI");
-const LK=document.getElementById("LK");
-const EMP=document.getElementById("EMP");
-const RSA=document.getElementById("RSA");
-const LPG=document.getElementById("LPG");
-const GE=document.getElementById("GE");
-const tyreV=document.getElementById("tyreV");
-const towingAmt=document.getElementById("towingAmt");
-const OT=document.getElementById("OT");
-const NP=document.getElementById("NP");
-const imt23=document.getElementById("imt23");
-const odd=document.getElementById("odd");
-const paodch=document.getElementById("paodch");
-const paodt=document.getElementById("paodt");
-const ncbd=document.getElementById('ncbd');
-const nopd=document.getElementById("nopd");
-const csinopd=document.getElementById('csinopd');
-const nopp=document.getElementById("nopp");
-const csinopp=document.getElementById('csinopp');
-const ELA=document.getElementById("ELA");
+/* ==================================================
+   UI ELEMENT BINDINGS (DOM REFERENCES)
+====================================================
+Each constant maps to an HTML input or output field.
+All calculations directly read from / write to these
+DOM elements.
+==================================================== */
+
+
+// IDV related fields
+const oldidv=document.getElementById("oldidv"); 	// Previous year IDV
+const dep=document.getElementById("dep");			// Depreciation percentage
+const newidv=document.getElementById("newidv");		// Calculated current IDV
+
+// Date fields
+const rdate=document.getElementById("rdate");		// Registration date
+const rsdate=document.getElementById("rsdate");		// Risk start date
+
+// Vehicle classification inputs
+const zone=document.getElementById("zone");			// Zone A / B / C
+const vtype=document.getElementById("vtype");		// Vehicle type
+const gvw=document.getElementById("gvw");			// Gross Vehicle Weight
+const cc=document.getElementById("cc");				// Cubic Capacity
+const nps=document.getElementById("nps");			// Number of passengers
+
+// Liability & OD related inputs
+const lld=document.getElementById("lld");			// Legal liability to driver
+const rate=document.getElementById("rate");			// OD rate (%)
+
+// Add-on checkboxes
+const ND=document.getElementById("ND");				// Nil Depreciation
+const EP=document.getElementById("EP");				// Engine Protect
+const CM=document.getElementById("CM");				// Consumables
+const RTI=document.getElementById("RTI");			// Return to Invoice
+const LK=document.getElementById("LK");				// Key Loss
+const EMP=document.getElementById("EMP");			// Electrical accessories
+const RSA=document.getElementById("RSA");			// Road Side Assistance
+const LPG=document.getElementById("LPG");			// LPG/CNG Kit
+const GE=document.getElementById("GE");				// Geographical Extension
+const tyreV=document.getElementById("tyreV");		// Tyre protection
+const towingAmt=document.getElementById("towingAmt");	// Towing add-on
+const OT=document.getElementById("OT");				// Own trailer
+const NP=document.getElementById("NP");				// NCB Protection
+const imt23=document.getElementById("imt23");		// IMT 23 endorsement
+
+// OD Discount %
+const odd=document.getElementById("odd");			// OD discount (%)
+
+// Personal Accident & Liability related inputs
+const paodch=document.getElementById("paodch");		// PA Owner Driver checkbox
+const paodt=document.getElementById("paodt");		// PA tenure
+const ncbd=document.getElementById('ncbd');			// No Claim Bonus %
+const nopd=document.getElementById("nopd");			// No. of paid drivers
+const csinopd=document.getElementById('csinopd');	// CSI for paid driver
+const nopp=document.getElementById("nopp");			// No. of passengers
+const csinopp=document.getElementById('csinopp');	// CSI for passengers
+const ELA=document.getElementById("ELA");			// Electrical accessories SI
+
+/* ==================================================
+   DATE FORMAT UTILITY
+====================================================
+Formats JavaScript Date object into YYYY-MM-DD
+Used to restrict date inputs in HTML.
+==================================================== */
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
@@ -44,51 +95,84 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-// Example usage
+// Get current date and restrict registration date input
 const currentDate = new Date();
 console.log(formatDate(currentDate));
 rdate.setAttribute("max",formatDate(currentDate));
-//console.log(formattedDate);
-const OD1P=document.getElementById("OD1P");
-const OD2P=document.getElementById("OD2P");
-const OD3P=document.getElementById("OD3P");
-const OD4P=document.getElementById("OD4P");
-const OD5P=document.getElementById("OD5P");
-const OD6P=document.getElementById("OD6P");
-const OD7P=document.getElementById("OD7P");
-const OD8P=document.getElementById("OD8P");
-const OD9P=document.getElementById("OD9P");
-const OD10P=document.getElementById("OD10P");
-const OD11P=document.getElementById("OD11P");
-const OD12P=document.getElementById("OD12P");
-const OD13P=document.getElementById("OD13P");
-const OD14P=document.getElementById("OD14P");
-const OD15P=document.getElementById("OD15P");
-const OD16P=document.getElementById("OD16P");
-const OD17P=document.getElementById("OD17P");
-const OD18P=document.getElementById("OD18P");
-const OD19P=document.getElementById("OD19P");
-const OD20P=document.getElementById("OD20P");
-const Liability1P=document.getElementById("Liability1P");
-const Liability2P=document.getElementById("Liability2P");
-const Liability3P=document.getElementById("Liability3P");
-const Liability4P=document.getElementById("Liability4P");
-const Liability5P=document.getElementById("Liability5P");
-const Liability6P=document.getElementById("Liability6P");
-const Liability7P=document.getElementById("Liability7P");
-const Liability8P=document.getElementById("Liability8P");
-const Liability9P=document.getElementById("Liability9P");
-const tod=document.getElementById('tod');
-const god=document.getElementById('god');
-const ttp=document.getElementById('ttp');
-const gttp=document.getElementById('gttp');
-const eTypeSelect=document.getElementById('eTypeSelect');
-const EVP=document.getElementById("EVP");
-const TrOD=document.getElementById('TrOD');
+
+/* ==================================================
+   OD & TP OUTPUT FIELDS
+====================================================
+These elements display calculated premium components
+for Own Damage and Liability sections.
+==================================================== */
+
+// OD premium components
+const OD1P=document.getElementById("OD1P");		// Base OD
+const OD2P=document.getElementById("OD2P");		// OD Discount
+const OD3P=document.getElementById("OD3P");		// IMT 23
+const OD4P=document.getElementById("OD4P");		// Nil Dep
+const OD5P=document.getElementById("OD5P");		// Engine Protect
+const OD6P=document.getElementById("OD6P");		// Consumables
+const OD7P=document.getElementById("OD7P");		// RTI
+const OD8P=document.getElementById("OD8P");		// Key Loss
+const OD9P=document.getElementById("OD9P");		// Electrical accessories
+const OD10P=document.getElementById("OD10P");	// RSA
+const OD11P=document.getElementById("OD11P");	// Tyre cover
+const OD12P=document.getElementById("OD12P");	// NCB protection
+const OD13P=document.getElementById("OD13P");	// Geographical extension
+const OD14P=document.getElementById("OD14P");	// LPG loading
+const OD15P=document.getElementById("OD15P");	// Own trailer
+const OD16P=document.getElementById("OD16P");	// Towing
+const OD17P=document.getElementById("OD17P");	// NCB discount
+const OD18P=document.getElementById("OD18P");	// EV Protect
+const OD19P=document.getElementById("OD19P");	// Electrical accessories loading
+const OD20P=document.getElementById("OD20P");	// Trailer OD
+
+// Liability premium components
+const Liability1P=document.getElementById("Liability1P");	// Basic TP
+const Liability2P=document.getElementById("Liability2P");	// Passenger liability
+const Liability3P=document.getElementById("Liability3P");	// Paid driver
+const Liability4P=document.getElementById("Liability4P");	// PA Owner Driver
+const Liability5P=document.getElementById("Liability5P");	// Paid driver CSI
+const Liability6P=document.getElementById("Liability6P");	// Passenger CSI
+const Liability7P=document.getElementById("Liability7P");	// Geographical extension
+const Liability8P=document.getElementById("Liability8P");	// LPG TP
+const Liability9P=document.getElementById("Liability9P");	// Trailer TP
+
+// Totals & GST
+const tod=document.getElementById('tod');	// Total OD
+const god=document.getElementById('god');	// GST on OD
+const ttp=document.getElementById('ttp');	// Total TP
+const gttp=document.getElementById('gttp');	// GST on TP
+
+// Electric vehicle type selector & EV protection
+const eTypeSelect=document.getElementById('eTypeSelect');	// EV / Hybrid type
+const EVP=document.getElementById("EVP");					// EV Protect add-on
+const TrOD=document.getElementById('TrOD');					// Trailer OD SI
+
+/* ==================================================
+   INITIAL RESET ON PAGE LOAD
+====================================================
+Clears all premium values when the page loads
+to avoid displaying stale data.
+==================================================== */
+
 (function(){
   resetPremiumAmount();
 })();
 
+/* ==================================================
+   OWN DAMAGE (OD) RATE CALCULATION FUNCTIONS
+====================================================
+Each function below calculates the OD rate (%) based on:
+• Vehicle age (derived from registration & risk dates)
+• Zone (A / B / C)
+• Vehicle-specific rating parameters (CC / GVW / NPS)
+• Electric / Hybrid classification (where applicable)
+
+These functions strictly represent tariff tables.
+==================================================== */
 
 function gcvODRate(){
   console.log('insdie gcv');
@@ -2613,3 +2697,4 @@ function evProtect(){
     }
   }
 }
+
